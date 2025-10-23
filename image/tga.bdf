@@ -10,7 +10,7 @@
     mime: ["image/x-targa", "image/x-tga"] 
   },
   binary: [
-    { at: [-18, "end"] }, { type: magic, match: "TRUEVISION-XFILE.\x00" },
+    { type: magic, match: "TRUEVISION-XFILE.\x00", at: [-18, "end"] },
     { at: 0,
       id: header,
       type: struct,
