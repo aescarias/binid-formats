@@ -1,6 +1,6 @@
 {
   meta: {
-    bdf: "0.3",
+    bdf: "0.4",
     name: "Quite Okay Audio (QOA) data",
     mime: ["audio/x-qoa"],
     exts: [".qoa"]
@@ -10,19 +10,17 @@
     { id: samples, type: uint32, endian: "big", name: "Samples per channel" },
     { id: frame,
       name: "First frame",
-      type: struct, // struct[ceil(samples / (256 * 20))],
+      type: struct, // array of struct[ceil(samples / (256 * 20))],
       endian: "big",
       fields: [
-        { id: numChannels, type: uint8, name: "No. of channels" },
-        // rudimentary uint24 parsing
-        { type: uint8, id: _srb1 }, { type: uint8, id: _srb2 }, { type: uint8, id: _srb3 }, 
-        { type: var, id: sampleRate, 
-          value: _srb1<<16 | _srb2<<8 | _srb3, 
-          name: "Sample rate (hz)" 
-        },
-        { id: frameSamples, type: uint16, name: "Samples per channel in frame" },
-        { id: frameSize, type: uint16, name: "Frame size" },
-        { id: frameData, type: byte[frameSize - 8] }
+        { type: uint8,  id: numChannels,  name: "No. of channels" },
+        { type: uint24, id: sampleRate,   name: "Sample rate (hz)" },
+        { type: uint16, id: frameSamples, name: "Samples per channel in frame" },
+        { type: uint16, id: frameSize,    name: "Frame size" },
+        { type: byte[frameSize - 8], 
+          id: frameData, 
+          name: "Frame data" 
+        }
       ]
     }
   ]

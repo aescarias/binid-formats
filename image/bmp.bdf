@@ -1,10 +1,28 @@
 {
   meta: {
-    bdf: "0.3",
+    bdf: "0.4",
     name: "Windows Bitmap file",
     mime: ["image/bmp", "image/x-bmp"],
     exts: [".bmp", ".dib"],
   },
+  types: [
+    { id: CompressMethod,
+      type: enum[uint32],
+      endian: "big",
+      members: [
+        { id: BI_RGB,            value: 0,  doc: "None (RGB)" },
+        { id: BI_RLE8,           value: 1,  doc: "RLE (8 bpp)" },
+        { id: BI_RLE4,           value: 2,  doc: "RLE (4 bpp)" },
+        { id: BI_BITFIELDS,      value: 3,  doc: "Huffmann 1D / RGB / RGBA" },
+        { id: BI_JPEG,           value: 4,  doc: "RLE-24 / JPEG" },
+        { id: BI_PNG,            value: 5,  doc: "PNG" },
+        { id: BI_ALPHABITFIELDS, value: 6,  doc: "RGBA" },
+        { id: BI_CMYK,           value: 11, doc: "None (Metafile CMYK)" },
+        { id: BI_CMYKRLE8,       value: 12, doc: "RLE (8 bpp / Metafile CMYK)" },
+        { id: BI_CMYKRLE4,       value: 13, doc: "RLE (4 bpp / Metafile CMYK)" }
+      ]
+    }
+  ],
   binary: [
     { id: bmHeader, 
       type: struct,
@@ -25,16 +43,16 @@
       name: "Bitmap info header",
       endian: "little",
       fields: [
-        { id: width,          type: int32,  name: "Width (px)" },
-        { id: height,         type: int32,  name: "Height (px)" },
-        { id: planes,         type: uint16, name: "Color planes", valid: planes == 1 },
-        { id: bpp,            type: uint16, name: "Bits per pixel" },
-        { id: compressMethod, type: uint32, name: "Compression method" },
-        { id: imageSize,      type: uint32, name: "Image size" },
-        { id: htRes,          type: int32,  name: "Horizontal resolution (px per meter)" },
-        { id: vtRes,          type: int32,  name: "Vertical resolution (px per meter)" },
-        { id: colors,         type: uint32, name: "Colors in palette" },
-        { id: impColors,      type: uint32, name: "Important colors in palette" }
+        { id: width,          type: int32,          name: "Width (px)" },
+        { id: height,         type: int32,          name: "Height (px)" },
+        { id: planes,         type: uint16,         name: "Color planes", valid: planes == 1 },
+        { id: bpp,            type: uint16,         name: "Bits per pixel" },
+        { id: compressMethod, type: CompressMethod, name: "Compression method" },
+        { id: imageSize,      type: uint32,         name: "Image size (bytes)" },
+        { id: htRes,          type: int32,          name: "Horizontal resolution (px per meter)" },
+        { id: vtRes,          type: int32,          name: "Vertical resolution (px per meter)" },
+        { id: colors,         type: uint32,         name: "Colors in palette" },
+        { id: impColors,      type: uint32,         name: "Important colors in palette" }
       ]
     }
   ]

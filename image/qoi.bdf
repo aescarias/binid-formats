@@ -2,11 +2,27 @@
 // Spec at https://qoiformat.org/qoi-specification.pdf 
 {
   meta: {
-    bdf: "0.3",
+    bdf: "0.4",
     name: "Quite Ok Image (QOI) data",
     mime: ["image/x-qoi"],
     exts: [".qoi"],
   },
+  types: [
+    { id: ColorSpace,
+      type: enum[uint8],
+      members: [
+        { id: SRGB,   value: 0x0, doc: "sRGB with linear alpha" },
+        { id: LINEAR, value: 0x1, doc: "All channels linear" }
+      ]
+    },
+    { id: ChannelConfig,
+      type: enum[uint8],
+      members: [
+        { id: RGB,  value: 0x3 },
+        { id: RGBA, value: 0x4 }
+      ]
+    }
+  ],
   binary: [
     { id: header,
       type: struct,
@@ -16,8 +32,8 @@
         { type: magic, match: "qoif" },
         { id: width, type: uint32, name: "Width (px)" },
         { id: height, type: uint32, name: "Height (px)" },
-        { id: channels, type: uint8, name: "Channels" },
-        { id: colorSpace, type: uint8, name: "Color space" }
+        { id: channels, type: ChannelConfig, name: "Channels" },
+        { id: colorSpace, type: ColorSpace, name: "Color space" }
       ]
     }
   ]

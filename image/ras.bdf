@@ -3,11 +3,35 @@
 
 {
   meta: {
-    bdf: "0.3",
+    bdf: "0.4",
     name: "Sun Raster bitmap",
     mime: ["image/x-sun-raster"], // mime not officially registered
     exts: [".ras", ".sun"]
   },
+  types: [
+    { id: RasterType,
+      type: enum[uint32],
+      endian: "big",
+      members: [
+        { id: RT_OLD,          value: 0x0000, doc: "Old" },
+        { id: RT_STANDARD,     value: 0x0001, doc: "Standard" },
+        { id: RT_BYTE_ENCODED, value: 0x0002, doc: "Byte-encoded" },
+        { id: RT_RGB,          value: 0x0003, doc: "RGB format" },
+        { id: RT_TIFF,         value: 0x0004, doc: "TIFF format" },
+        { id: RT_IFF,          value: 0x0005, doc: "IFF format" },
+        { id: RT_EXPERIMENTAL, value: 0xFFFF, doc: "Experimental" }
+      ]
+    },
+    { id: ColorMapType,
+      type: enum[uint32],
+      endian: "big",
+      members: [
+        { id: CM_NONE, value: 0x0000, doc: "None" },
+        { id: CM_RGB,  value: 0x0001, doc: "RGB" },
+        { id: CM_RAW,  value: 0x0002, doc: "Raw" }
+      ]
+    }
+  ],
   binary: [
     { id: header,
       type: struct,
@@ -15,13 +39,13 @@
       endian: "big",
       fields: [
         { type: magic, match: "Y\xa6j\x95" },
-        { type: uint32, id: width, name: "Width (px)" },
-        { type: uint32, id: height, name: "Height (px)" },
-        { type: uint32, id: depth,  name: "Bits per pixel" },
-        { type: uint32, id: length, name: "Image data (bytes)" },
-        { type: uint32, id: rasterType, name: "Raster type" },
-        { type: uint32, id: colorMap, name: "Color map type" },
-        { type: uint32, id: colorLen, name: "Color map length" }
+        { type: uint32,       id: width,      name: "Width (px)" },
+        { type: uint32,       id: height,     name: "Height (px)" },
+        { type: uint32,       id: depth,      name: "Bits per pixel" },
+        { type: uint32,       id: length,     name: "Image data (bytes)" },
+        { type: RasterType,   id: rasterType, name: "Raster type" },
+        { type: ColorMapType, id: colorMap,   name: "Color map type" },
+        { type: uint32,       id: colorLen,   name: "Color map length" }
       ]
     },
     // next follows the image data encoded in whatever scheme is specified by
