@@ -1,0 +1,471 @@
+// BinDef for the header of a Python bytecode file (pyc)
+// https://github.com/python/cpython/blob/main/Lib/importlib/_bootstrap_external.py
+// https://peps.python.org/pep-3147/
+// https://peps.python.org/pep-0552/
+
+{
+  meta: {
+    bdf: "0.4",
+    name: "CPython compiled bytecode",
+    exts: [".pyc"],
+    mime: [],
+    doc: "Compiled bytecode produced by the CPython runtime"
+  },
+  types: [
+    { id: BytecodeMagic,
+      type: enum[uint16],
+      endian: "little",
+      members: [
+        // generated from https://github.com/python/cpython/blob/main/Include/internal/pycore_magic_number.h
+        
+        /* 1.5 and 1.6 */
+        {id: PYMAGIC_15,        value: 20121, doc: "Python 1.5.0 - 1.5.2"},
+        {id: PYMAGIC_16,        value: 50428, doc: "Python 1.6"},
+
+        /* 2.0-2.2 */
+        {id: PYMAGIC_20,        value: 50823, doc: "Python 2.0 - 2.0.1"},
+        {id: PYMAGIC_21,        value: 60202, doc: "Python 2.1 - 2.1.2"},
+        {id: PYMAGIC_22,        value: 60717, doc: "Python 2.2"},
+
+        /* 2.3a0 */
+        {id: PYMAGIC_23a0_V1,   value: 62011, doc: "Python 2.3a0"},
+        {id: PYMAGIC_23a0_V2,   value: 62021, doc: "Python 2.3a0"},
+
+        {id: PYMAGIC_24a0,      value: 62041, doc: "Python 2.4a0"},
+
+        /* 2.4a3 and 2.4b1 */
+        {id: PYMAGIC_24a3,      value: 62051, doc: "Python 2.4a3"},
+        {id: PYMAGIC_24b1,      value: 62061, doc: "Python 2.4b1"},
+
+        /* 2.5a0 */
+        {id: PYMAGIC_25a0_V1,   value: 62071, doc: "Python 2.5a0"},
+        {id: PYMAGIC_25a0_V2,   value: 62081, doc: "Python 2.5a0"},
+        {id: PYMAGIC_25a0_V3,   value: 62091, doc: "Python 2.5a0"},
+        {id: PYMAGIC_25a0_V4,   value: 62092, doc: "Python 2.5a0"},
+
+        /* 2.5b3 */
+        {id: PYMAGIC_25b3_V1,   value: 62101, doc: "Python 2.5b3"},
+        {id: PYMAGIC_25b3_V2,   value: 62111, doc: "Python 2.5b3"},
+        
+        /* 2.5c1 and 2.5c2 */
+        {id: PYMAGIC_25c1,      value: 62121, doc: "Python 2.5c1"},
+        {id: PYMAGIC_25c2,      value: 62131, doc: "Python 2.5c2"},
+
+        /* 2.6 */
+        {id: PYMAGIC_26a0,      value: 62151, doc: "Python 2.6a0"},
+        {id: PYMAGIC_26a1,      value: 62161, doc: "Python 2.6a1"},
+
+        /* 2.7a0 */
+        {id: PYMAGIC_27a0_V1,   value: 62171, doc: "Python 2.7a0"},
+        {id: PYMAGIC_27a0_V2,   value: 62181, doc: "Python 2.7a0"},
+        {id: PYMAGIC_27a0_V3,   value: 62191, doc: "Python 2.7a0"},
+        {id: PYMAGIC_27a0_V4,   value: 62201, doc: "Python 2.7a0"},
+        {id: PYMAGIC_27a0_V5,   value: 62211, doc: "Python 2.7a0"},
+
+        /* Python 3000 */
+        {id: PYMAGIC_3000_V1,   value: 3000,  doc: "Python 3000"},
+        {id: PYMAGIC_3000_V2,   value: 3010,  doc: "Python 3000"},
+        {id: PYMAGIC_3000_V3,   value: 3020,  doc: "Python 3000"},
+        {id: PYMAGIC_3000_V4,   value: 3030,  doc: "Python 3000"},
+        {id: PYMAGIC_3000_V5,   value: 3040,  doc: "Python 3000"},
+        {id: PYMAGIC_3000_V6,   value: 3050,  doc: "Python 3000"},
+        {id: PYMAGIC_3000_V7,   value: 3060,  doc: "Python 3000"},
+        {id: PYMAGIC_3000_V8,   value: 3061,  doc: "Python 3000"},
+        {id: PYMAGIC_3000_V9,   value: 3071,  doc: "Python 3000"},
+        {id: PYMAGIC_3000_V10,  value: 3081,  doc: "Python 3000"},
+        {id: PYMAGIC_3000_V11,  value: 3091,  doc: "Python 3000"},
+        {id: PYMAGIC_3000_V12,  value: 3101,  doc: "Python 3000"},
+        {id: PYMAGIC_3000_V13,  value: 3103,  doc: "Python 3000"},
+
+        /* 3.0 */
+        {id: PYMAGIC_30a4,      value: 3111,  doc: "Python 3.0a4"},
+        {id: PYMAGIC_30b1,      value: 3131,  doc: "Python 3.0b1"},
+
+        /* 3.1 */
+        {id: PYMAGIC_31a1_V1,   value: 3141,  doc: "Python 3.1a1"},
+        {id: PYMAGIC_31a1_V2,   value: 3151,  doc: "Python 3.1a1"},
+
+        /* 3.2 */
+        {id: PYMAGIC_32a1,      value: 3160,  doc: "Python 3.2a1"},
+        {id: PYMAGIC_32a2,      value: 3170,  doc: "Python 3.2a2"},
+        {id: PYMAGIC_32a3,      value: 3180,  doc: "Python 3.2a3"},
+        
+        /* 3.3a1 */
+        {id: PYMAGIC_33a1_V1,   value: 3190,  doc: "Python 3.3a1"},
+        {id: PYMAGIC_33a1_V2,   value: 3200,  doc: "Python 3.3a1"},
+        {id: PYMAGIC_33a1_V3,   value: 3210,  doc: "Python 3.3a1"},
+        
+        /* 3.3a2 and 3.3a4 */
+        {id: PYMAGIC_33a2,      value: 3220,  doc: "Python 3.3a2"},
+        {id: PYMAGIC_33a4,      value: 3230,  doc: "Python 3.3a4"},
+        
+        /* 3.4a1 */
+        {id: PYMAGIC_34a1_V1,   value: 3250,  doc: "Python 3.4a1"},
+        {id: PYMAGIC_34a1_V2,   value: 3260,  doc: "Python 3.4a1"},
+        {id: PYMAGIC_34a1_V3,   value: 3270,  doc: "Python 3.4a1"},
+        {id: PYMAGIC_34a1_V4,   value: 3280,  doc: "Python 3.4a1"},
+        
+        /* 3.4a4 */
+        {id: PYMAGIC_34a4_V1,   value: 3290,  doc: "Python 3.4a4"},
+        {id: PYMAGIC_34a4_V2,   value: 3300,  doc: "Python 3.4a4"},
+        
+        /* 3.4rc2 */
+        {id: PYMAGIC_34rc2,     value: 3310,  doc: "Python 3.4rc2"},
+        
+        /* 3.5 alphas and betas */
+        {id: PYMAGIC_35a1,      value: 3320,  doc: "Python 3.5a1"},
+        {id: PYMAGIC_35b1,      value: 3330,  doc: "Python 3.5b1"},
+        {id: PYMAGIC_35b2,      value: 3340,  doc: "Python 3.5b2"},
+        {id: PYMAGIC_35b3,      value: 3350,  doc: "Python 3.5b3"},
+        
+        /* 3.5.2 */
+        {id: PYMAGIC_352,       value: 3351,  doc: "Python 3.5.2"},
+        
+        /* 3.6 alphas */
+        {id: PYMAGIC_36a0,      value: 3360,  doc: "Python 3.6a0"},
+        {id: PYMAGIC_36a1,      value: 3661,  doc: "Python 3.6a1"},
+        
+        /* 3.6a2 */
+        {id: PYMAGIC_36a2_V1,   value: 3370,  doc: "Python 3.6a2"},
+        {id: PYMAGIC_36a2_V2,   value: 3371,  doc: "Python 3.6a2"},
+        {id: PYMAGIC_36a2_V3,   value: 3372,  doc: "Python 3.6a2"},
+        
+        /* 3.6b1 */
+        {id: PYMAGIC_36b1_V1,   value: 3373,  doc: "Python 3.6b1"},
+        {id: PYMAGIC_36b1_V2,   value: 3375,  doc: "Python 3.6b1"},
+        {id: PYMAGIC_36b1_V3,   value: 3376,  doc: "Python 3.6b1"},
+        {id: PYMAGIC_36b1_V4,   value: 3377,  doc: "Python 3.6b1"},
+        
+        /* 3.6b2 and 3.6rc1 */
+        {id: PYMAGIC_36b2,      value: 3378,  doc: "Python 3.6b2"},
+        {id: PYMAGIC_36rc1,     value: 3379,  doc: "Python 3.6rc1"},
+        
+        /* 3.7 */
+        {id: PYMAGIC_37a1,      value: 3390,  doc: "Python 3.7a1"},
+        {id: PYMAGIC_37a2,      value: 3391,  doc: "Python 3.7a2"},
+        {id: PYMAGIC_37a4,      value: 3392,  doc: "Python 3.7a4"},
+        {id: PYMAGIC_37b1,      value: 3393,  doc: "Python 3.7b1"},
+        {id: PYMAGIC_37b5,      value: 3394,  doc: "Python 3.7b5"},
+        
+        /* 3.8a1 */
+        {id: PYMAGIC_38a1_V1,   value: 3400,  doc: "Python 3.8a1"},
+        {id: PYMAGIC_38a1_V2,   value: 3401,  doc: "Python 3.8a1"},
+        {id: PYMAGIC_38a1_V3,   value: 3410,  doc: "Python 3.8a1"},
+        
+        /* 3.8b2 */
+        {id: PYMAGIC_38b2_V1,   value: 3411,  doc: "Python 3.8b2"},
+        {id: PYMAGIC_38b2_V2,   value: 3412,  doc: "Python 3.8b2"},
+        
+        /* 3.8b4 */
+        {id: PYMAGIC_38b4,      value: 3413,  doc: "Python 3.8b4"},
+        
+        /* 3.9a0 */
+        {id: PYMAGIC_39a0_V1,   value: 3420,  doc: "Python 3.9a0"},
+        {id: PYMAGIC_39a0_V2,   value: 3421,  doc: "Python 3.9a0"},
+        {id: PYMAGIC_39a0_V3,   value: 3422,  doc: "Python 3.9a0"},
+
+        /* 3.9a2 */
+        {id: PYMAGIC_39a2_V1,   value: 3423,  doc: "Python 3.9a2"},
+        {id: PYMAGIC_39a2_V2,   value: 3424,  doc: "Python 3.9a2"},
+        {id: PYMAGIC_39a2_V3,   value: 3425,  doc: "Python 3.9a2"},
+        
+        /* 3.10a1 */
+        {id: PYMAGIC_310a1_V1,  value: 3430,  doc: "Python 3.10a1"},
+        {id: PYMAGIC_310a1_V2,  value: 3431,  doc: "Python 3.10a1"},
+        
+        /* 3.10a2 */
+        {id: PYMAGIC_310a2_V1,  value: 3432,  doc: "Python 3.10a2"},
+        {id: PYMAGIC_310a2_V2,  value: 3433,  doc: "Python 3.10a2"},
+        
+        /* 3.10 alphas */
+        {id: PYMAGIC_310a6,     value: 3434,  doc: "Python 3.10a6"},
+        {id: PYMAGIC_310a7,     value: 3435,  doc: "Python 3.10a7"},
+        
+        /* 3.10b1 */
+        {id: PYMAGIC_310b1_V1,  value: 3436,  doc: "Python 3.10b1"},
+        {id: PYMAGIC_310b1_V2,  value: 3437,  doc: "Python 3.10b1"},
+        {id: PYMAGIC_310b1_V3,  value: 3438,  doc: "Python 3.10b1"},
+        {id: PYMAGIC_310b1_V4,  value: 3439,  doc: "Python 3.10b1"},
+
+        /* 3.11a1 */
+        {id: PYMAGIC_311a1_V1,  value: 3450,  doc: "Python 3.11a1"},
+        {id: PYMAGIC_311a1_V2,  value: 3451,  doc: "Python 3.11a1"},
+        {id: PYMAGIC_311a1_V3,  value: 3452,  doc: "Python 3.11a1"},
+        {id: PYMAGIC_311a1_V4,  value: 3453,  doc: "Python 3.11a1"},
+        {id: PYMAGIC_311a1_V5,  value: 3454,  doc: "Python 3.11a1"},
+        {id: PYMAGIC_311a1_V6,  value: 3455,  doc: "Python 3.11a1"},
+        {id: PYMAGIC_311a1_V7,  value: 3456,  doc: "Python 3.11a1"},
+        {id: PYMAGIC_311a1_V8,  value: 3457,  doc: "Python 3.11a1"},
+        {id: PYMAGIC_311a1_V9,  value: 3458,  doc: "Python 3.11a1"},
+        {id: PYMAGIC_311a1_V10, value: 3459,  doc: "Python 3.11a1"},
+        {id: PYMAGIC_311a1_V11, value: 3460,  doc: "Python 3.11a1"},
+        {id: PYMAGIC_311a1_V12, value: 3461,  doc: "Python 3.11a1"},
+        
+        /* 3.11a2 */
+        {id: PYMAGIC_311a2,     value: 3462,  doc: "Python 3.11a2"},
+
+        /* 3.11a3 */
+        {id: PYMAGIC_311a3_V1,  value: 3463,  doc: "Python 3.11a3"},
+        {id: PYMAGIC_311a3_V2,  value: 3464,  doc: "Python 3.11a3"},
+        {id: PYMAGIC_311a3_V3,  value: 3465,  doc: "Python 3.11a3"},
+        
+        /* 3.11a4 */
+        {id: PYMAGIC_311a4_V1,  value: 3466,  doc: "Python 3.11a4"},
+        {id: PYMAGIC_311a4_V2,  value: 3467,  doc: "Python 3.11a4"},
+        {id: PYMAGIC_311a4_V3,  value: 3468,  doc: "Python 3.11a4"},
+        {id: PYMAGIC_311a4_V4,  value: 3469,  doc: "Python 3.11a4"},
+        {id: PYMAGIC_311a4_V5,  value: 3470,  doc: "Python 3.11a4"},
+        {id: PYMAGIC_311a4_V6,  value: 3471,  doc: "Python 3.11a4"},
+        {id: PYMAGIC_311a4_V7,  value: 3472,  doc: "Python 3.11a4"},
+        {id: PYMAGIC_311a4_V8,  value: 3473,  doc: "Python 3.11a4"},
+        {id: PYMAGIC_311a4_V9,  value: 3474,  doc: "Python 3.11a4"},
+
+        /* 3.11a5 */
+        {id: PYMAGIC_311a5_V1,  value: 3475,  doc: "Python 3.11a5"},
+        {id: PYMAGIC_311a5_V2,  value: 3476,  doc: "Python 3.11a5"},
+        {id: PYMAGIC_311a5_V3,  value: 3477,  doc: "Python 3.11a5"},
+        {id: PYMAGIC_311a5_V4,  value: 3478,  doc: "Python 3.11a5"},
+        {id: PYMAGIC_311a5_V5,  value: 3479,  doc: "Python 3.11a5"},
+        {id: PYMAGIC_311a5_V6,  value: 3480,  doc: "Python 3.11a5"},
+        {id: PYMAGIC_311a5_V7,  value: 3481,  doc: "Python 3.11a5"},
+        {id: PYMAGIC_311a5_V8,  value: 3482,  doc: "Python 3.11a5"},
+        {id: PYMAGIC_311a5_V9,  value: 3483,  doc: "Python 3.11a5"},
+        {id: PYMAGIC_311a5_V10, value: 3484,  doc: "Python 3.11a5"},
+        {id: PYMAGIC_311a5_V11, value: 3485,  doc: "Python 3.11a5"},
+
+        /* 3.11a6 */
+        {id: PYMAGIC_311a6_V1,  value: 3486,  doc: "Python 3.11a6"},
+        {id: PYMAGIC_311a6_V2,  value: 3487,  doc: "Python 3.11a6"},
+        {id: PYMAGIC_311a6_V3,  value: 3488,  doc: "Python 3.11a6"},
+        {id: PYMAGIC_311a6_V4,  value: 3489,  doc: "Python 3.11a6"},
+        {id: PYMAGIC_311a6_V5,  value: 3490,  doc: "Python 3.11a6"},
+        {id: PYMAGIC_311a6_V6,  value: 3491,  doc: "Python 3.11a6"},
+
+        /* 3.11a7 */
+        {id: PYMAGIC_311a7_V1,  value: 3492,  doc: "Python 3.11a7"},
+        {id: PYMAGIC_311a7_V2,  value: 3493,  doc: "Python 3.11a7"},
+        {id: PYMAGIC_311a7_V3,  value: 3494,  doc: "Python 3.11a7"},
+
+        /* 3.11b4 */
+        {id: PYMAGIC_311b4,     value: 3495,  doc: "Python 3.11b4"},
+
+        /* 3.12a1 */
+        {id: PYMAGIC_312a1_V1,  value: 3500,  doc: "Python 3.12a1"},
+        {id: PYMAGIC_312a1_V2,  value: 3501,  doc: "Python 3.12a1"},
+        {id: PYMAGIC_312a1_V3,  value: 3502,  doc: "Python 3.12a1"},
+        {id: PYMAGIC_312a1_V4,  value: 3503,  doc: "Python 3.12a1"},
+        {id: PYMAGIC_312a1_V5,  value: 3504,  doc: "Python 3.12a1"},
+        {id: PYMAGIC_312a1_V6,  value: 3505,  doc: "Python 3.12a1"},
+        {id: PYMAGIC_312a1_V7,  value: 3506,  doc: "Python 3.12a1"},
+        {id: PYMAGIC_312a1_V8,  value: 3507,  doc: "Python 3.12a1"},
+        {id: PYMAGIC_312a1_V9,  value: 3508,  doc: "Python 3.12a1"},
+        {id: PYMAGIC_312a1_V10, value: 3509,  doc: "Python 3.12a1"},
+
+        /* 3.12a2 */
+        {id: PYMAGIC_312a2_V1,  value: 3510,  doc: "Python 3.12a2"},
+        {id: PYMAGIC_312a2_V2,  value: 3511,  doc: "Python 3.12a2"},
+        {id: PYMAGIC_312a2_V3,  value: 3512,  doc: "Python 3.12a2"},
+
+        /* 3.12a4 */
+        {id: PYMAGIC_312a4_V1,  value: 3513,  doc: "Python 3.12a4"},
+        {id: PYMAGIC_312a4_V2,  value: 3514,  doc: "Python 3.12a4"},
+        
+        /* 3.12a5 */
+        {id: PYMAGIC_312a5_V1,  value: 3515,  doc: "Python 3.12a5"},
+        {id: PYMAGIC_312a5_V2,  value: 3516,  doc: "Python 3.12a5"},
+        {id: PYMAGIC_312a5_V3,  value: 3517,  doc: "Python 3.12a5"},
+        
+        /* 3.12a6 */
+        {id: PYMAGIC_312a6_V1,  value: 3518,  doc: "Python 3.12a6"},
+        {id: PYMAGIC_312a6_V2,  value: 3519,  doc: "Python 3.12a6"},
+        {id: PYMAGIC_312a6_V3,  value: 3520,  doc: "Python 3.12a6"},
+        
+        /* 3.12a7 */
+        {id: PYMAGIC_312a7_V1,  value: 3521,  doc: "Python 3.12a7"},
+        {id: PYMAGIC_312a7_V2,  value: 3522,  doc: "Python 3.12a7"},
+        {id: PYMAGIC_312a7_V3,  value: 3523,  doc: "Python 3.12a7"},
+        {id: PYMAGIC_312a7_V4,  value: 3524,  doc: "Python 3.12a7"},
+        
+        /* 3.12b1 */
+        {id: PYMAGIC_312b1_V1,  value: 3525,  doc: "Python 3.12b1"},
+        {id: PYMAGIC_312b1_V2,  value: 3526,  doc: "Python 3.12b1"},
+        {id: PYMAGIC_312b1_V3,  value: 3527,  doc: "Python 3.12b1"},
+        {id: PYMAGIC_312b1_V4,  value: 3528,  doc: "Python 3.12b1"},
+        {id: PYMAGIC_312b1_V5,  value: 3529,  doc: "Python 3.12b1"},
+        {id: PYMAGIC_312b1_V6,  value: 3530,  doc: "Python 3.12b1"},
+        {id: PYMAGIC_312b1_V7,  value: 3531,  doc: "Python 3.12b1"},
+        
+        /* 3.13a1 */
+        {id: PYMAGIC_313a1_V1,  value: 3550,  doc: "Python 3.13a1"},
+        {id: PYMAGIC_313a1_V2,  value: 3551,  doc: "Python 3.13a1"},
+        {id: PYMAGIC_313a1_V3,  value: 3552,  doc: "Python 3.13a1"},
+        {id: PYMAGIC_313a1_V4,  value: 3553,  doc: "Python 3.13a1"},
+        {id: PYMAGIC_313a1_V5,  value: 3554,  doc: "Python 3.13a1"},
+        {id: PYMAGIC_313a1_V6,  value: 3555,  doc: "Python 3.13a1"},
+        {id: PYMAGIC_313a1_V7,  value: 3556,  doc: "Python 3.13a1"},
+        {id: PYMAGIC_313a1_V8,  value: 3557,  doc: "Python 3.13a1"},
+        {id: PYMAGIC_313a1_V9,  value: 3558,  doc: "Python 3.13a1"},
+        {id: PYMAGIC_313a1_V10, value: 3559,  doc: "Python 3.13a1"},
+        {id: PYMAGIC_313a1_V11, value: 3560,  doc: "Python 3.13a1"},
+        {id: PYMAGIC_313a1_V12, value: 3561,  doc: "Python 3.13a1"},
+        {id: PYMAGIC_313a1_V13, value: 3562,  doc: "Python 3.13a1"},
+        {id: PYMAGIC_313a1_V14, value: 3563,  doc: "Python 3.13a1"},
+        {id: PYMAGIC_313a1_V15, value: 3564,  doc: "Python 3.13a1"},
+        {id: PYMAGIC_313a1_V16, value: 3565,  doc: "Python 3.13a1"},
+        {id: PYMAGIC_313a1_V17, value: 3566,  doc: "Python 3.13a1"},
+        {id: PYMAGIC_313a1_V18, value: 3567,  doc: "Python 3.13a1"},
+        {id: PYMAGIC_313a1_V19, value: 3568,  doc: "Python 3.13a1"},
+        
+        /* 3.13 alphas and betas */
+        {id: PYMAGIC_313a5,     value: 3569,  doc: "Python 3.13a5"},
+        {id: PYMAGIC_313a6,     value: 3570,  doc: "Python 3.13a6"},
+        {id: PYMAGIC_313b1,     value: 3571,  doc: "Python 3.13b1"},
+        
+        /* 3.14a1 */
+        {id: PYMAGIC_314a1_V1,  value: 3600,  doc: "Python 3.14a1"},
+        {id: PYMAGIC_314a1_V2,  value: 3601,  doc: "Python 3.14a1"},
+        {id: PYMAGIC_314a1_V3,  value: 3602,  doc: "Python 3.14a1"},
+        {id: PYMAGIC_314a1_V4,  value: 3603,  doc: "Python 3.14a1"},
+        {id: PYMAGIC_314a1_V5,  value: 3604,  doc: "Python 3.14a1"},
+        {id: PYMAGIC_314a1_V6,  value: 3605,  doc: "Python 3.14a1"},
+        {id: PYMAGIC_314a1_V7,  value: 3606,  doc: "Python 3.14a1"},
+        {id: PYMAGIC_314a1_V8,  value: 3607,  doc: "Python 3.14a1"},
+        {id: PYMAGIC_314a1_V9,  value: 3608,  doc: "Python 3.14a1"},
+        
+        /* 3.14a2 */
+        {id: PYMAGIC_314a2,     value: 3609,  doc: "Python 3.14a2"},
+        
+        /* 3.14a4 */
+        {id: PYMAGIC_314a4_V1,  value: 3610,  doc: "Python 3.14a4"},
+        {id: PYMAGIC_314a4_V2,  value: 3611,  doc: "Python 3.14a4"},
+        {id: PYMAGIC_314a4_V3,  value: 3612,  doc: "Python 3.14a4"},
+        {id: PYMAGIC_314a4_V4,  value: 3613,  doc: "Python 3.14a4"},
+        
+        /* 3.14a5 */
+        {id: PYMAGIC_314a5_V2,  value: 3614,  doc: "Python 3.14a5"},
+        {id: PYMAGIC_314a5_V2,  value: 3615,  doc: "Python 3.14a5"},
+        {id: PYMAGIC_314a5_V3,  value: 3616,  doc: "Python 3.14a5"},
+        
+        /* 3.14a6 */
+        {id: PYMAGIC_314a6_V1,  value: 3617,  doc: "Python 3.14a6"},
+        {id: PYMAGIC_314a6_V2,  value: 3618,  doc: "Python 3.14a6"},
+        {id: PYMAGIC_314a6_V3,  value: 3619,  doc: "Python 3.14a6"},
+        {id: PYMAGIC_314a6_V4,  value: 3620,  doc: "Python 3.14a6"},
+                
+        /* 3.14a7 */
+        {id: PYMAGIC_314a7_V1,  value: 3621,  doc: "Python 3.14a7"},
+        {id: PYMAGIC_314a7_V2,  value: 3622,  doc: "Python 3.14a7"},
+        {id: PYMAGIC_314a7_V3,  value: 3623,  doc: "Python 3.14a7"},
+        
+        /* 3.14 betas and RCs */
+        {id: PYMAGIC_314b1,     value: 3624,  doc: "Python 3.14b1"},
+        {id: PYMAGIC_314b3,     value: 3625,  doc: "Python 3.14b3"},
+        {id: PYMAGIC_314rc2,    value: 3626,  doc: "Python 3.14rc2"},
+        {id: PYMAGIC_314rc3,    value: 3627,  doc: "Python 3.14rc3"},
+        
+        /* 3.15 alphas */
+        {id: PYMAGIC_315a0,     value: 3650,  doc: "Python 3.15a0"},
+        {id: PYMAGIC_315a1_V1,  value: 3651,  doc: "Python 3.15a1"},
+        {id: PYMAGIC_315a1_V2,  value: 3652,  doc: "Python 3.15a1"},
+        {id: PYMAGIC_315a1_V3,  value: 3653,  doc: "Python 3.15a1"},
+        {id: PYMAGIC_315a1_V4,  value: 3654,  doc: "Python 3.15a1"},
+        {id: PYMAGIC_315a1_V5,  value: 3655,  doc: "Python 3.15a1"}
+      ]
+    }
+  ],
+  binary: [
+    { type: magic, 
+      match: [
+        "\x99\x4e", "\xfc\xc4", "\x87\xc6", "\x2a\xeb", "\x2d\xed", "\x3b\xf2", "\x45\xf2", 
+        "\x59\xf2", "\x63\xf2", "\x6d\xf2", "\x77\xf2", "\x81\xf2", "\x8b\xf2", "\x8c\xf2", 
+        "\x95\xf2", "\x9f\xf2", "\xa9\xf2", "\xb3\xf2", "\xc7\xf2", "\xd1\xf2", "\xdb\xf2", 
+        "\xe5\xf2", "\xef\xf2", "\xf9\xf2", "\x03\xf3", "\xb8\x0b", "\xc2\x0b", "\xcc\x0b", 
+        "\xd6\x0b", "\xe0\x0b", "\xea\x0b", "\xf4\x0b", "\xf5\x0b", "\xff\x0b", "\x09\x0c", 
+        "\x13\x0c", "\x1d\x0c", "\x1f\x0c", "\x27\x0c", "\x3b\x0c", "\x45\x0c", "\x4f\x0c",
+        "\x58\x0c", "\x62\x0c", "\x6c\x0c", "\x76\x0c", "\x80\x0c", "\x8a\x0c", "\x94\x0c", 
+        "\x9e\x0c", "\xb2\x0c", "\xbc\x0c", "\xc6\x0c", "\xd0\x0c", "\xda\x0c", "\xe4\x0c", 
+        "\xee\x0c", "\xf8\x0c", "\x02\x0d", "\x0c\x0d", "\x16\x0d", "\x17\x0d", "\x20\x0d", 
+        "\x4d\x0e", "\x2a\x0d", "\x2b\x0d", "\x2c\x0d", "\x2d\x0d", "\x2f\x0d", "\x30\x0d", 
+        "\x31\x0d", "\x32\x0d", "\x33\x0d", "\x3e\x0d", "\x3f\x0d", "\x40\x0d", "\x41\x0d", 
+        "\x42\x0d", "\x48\x0d", "\x49\x0d", "\x52\x0d", "\x53\x0d", "\x54\x0d", "\x55\x0d",
+        "\x5c\x0d", "\x5d\x0d", "\x5e\x0d", "\x5f\x0d", "\x60\x0d", "\x61\x0d", "\x66\x0d", 
+        "\x67\x0d", "\x68\x0d", "\x69\x0d", "\x6a\x0d", "\x6b\x0d", "\x6c\x0d", "\x6d\x0d", 
+        "\x6e\x0d", "\x6f\x0d", "\x7a\x0d", "\x7b\x0d", "\x7c\x0d", "\x7d\x0d", "\x7e\x0d", 
+        "\x7f\x0d", "\x80\x0d", "\x81\x0d", "\x82\x0d", "\x83\x0d", "\x84\x0d", "\x85\x0d", 
+        "\x86\x0d", "\x87\x0d", "\x88\x0d", "\x89\x0d", "\x8a\x0d", "\x8b\x0d", "\x8c\x0d", 
+        "\x8d\x0d", "\x8e\x0d", "\x8f\x0d", "\x90\x0d", "\x91\x0d", "\x92\x0d", "\x93\x0d",
+        "\x94\x0d", "\x95\x0d", "\x96\x0d", "\x97\x0d", "\x98\x0d", "\x99\x0d", "\x9a\x0d", 
+        "\x9b\x0d", "\x9c\x0d", "\x9d\x0d", "\x9e\x0d", "\x9f\x0d", "\xa0\x0d", "\xa1\x0d", 
+        "\xa2\x0d", "\xa3\x0d", "\xa4\x0d", "\xa5\x0d", "\xa6\x0d", "\xa7\x0d", "\xac\x0d", 
+        "\xad\x0d", "\xae\x0d", "\xaf\x0d", "\xb0\x0d", "\xb1\x0d", "\xb2\x0d", "\xb3\x0d", 
+        "\xb4\x0d", "\xb5\x0d", "\xb6\x0d", "\xb7\x0d", "\xb8\x0d", "\xb9\x0d", "\xba\x0d", 
+        "\xbb\x0d", "\xbc\x0d", "\xbd\x0d", "\xbe\x0d", "\xbf\x0d", "\xc0\x0d", "\xc1\x0d", 
+        "\xc2\x0d", "\xc3\x0d", "\xc4\x0d", "\xc5\x0d", "\xc6\x0d", "\xc7\x0d", "\xc8\x0d", 
+        "\xc9\x0d", "\xca\x0d", "\xcb\x0d", "\xde\x0d", "\xdf\x0d", "\xe0\x0d", "\xe1\x0d", 
+        "\xe2\x0d", "\xe3\x0d", "\xe4\x0d", "\xe5\x0d", "\xe6\x0d", "\xe7\x0d", "\xe8\x0d", 
+        "\xe9\x0d", "\xea\x0d", "\xeb\x0d", "\xec\x0d", "\xed\x0d", "\xee\x0d", "\xef\x0d", 
+        "\xf0\x0d", "\xf1\x0d", "\xf2\x0d", "\xf3\x0d", "\x10\x0e", "\x11\x0e", "\x12\x0e", 
+        "\x13\x0e", "\x14\x0e", "\x15\x0e", "\x16\x0e", "\x17\x0e", "\x18\x0e", "\x19\x0e",
+        "\x1a\x0e", "\x1b\x0e", "\x1c\x0e", "\x1d\x0e", "\x1e\x0e", "\x1f\x0e", "\x20\x0e", 
+        "\x21\x0e", "\x22\x0e", "\x23\x0e", "\x24\x0e", "\x25\x0e", "\x26\x0e", "\x27\x0e", 
+        "\x28\x0e", "\x29\x0e", "\x2a\x0e", "\x2b\x0e", "\x42\x0e", "\x43\x0e", "\x44\x0e", 
+        "\x45\x0e", "\x46\x0e", "\x47\x0e",
+      ]
+    },
+    { type: BytecodeMagic, id: version, at: 0, name: "Bytecode version" },
+    { type: magic, match: "\r\n" },
+
+    // PEP 552 mentioned that these two fields were big endian at some point
+    // but I don't think this was ever the case.
+    { if: version >= 3000 && version < 3392,
+      id: timestamp,
+      type: uint32,
+      endian: "little",
+      name: "Timestamp",
+    },
+    { if: version >= 3210 && version < 3392, 
+      id: fileSize,
+      type: uint32,
+      endian: "little",
+      name: "File size (bytes)"
+    },
+    
+    // PEP 552 for deterministic pycs
+    { if: version >= 3392,
+      id: flags,
+      type: uint32,
+      endian: "little",
+      name: "Flags"
+    },
+    { if: version >= 3392,
+      id: _hashBased,
+      type: var,
+      value: flags & 0b1 != 0
+    },
+    { if: version >= 3392,
+      id: cacheMethod,
+      type: var,
+      name: "Cache method",
+      value: _hashBased ? "Hash-based" : "Timestamp-based" 
+    },
+    { if: version >= 3392 && !_hashBased,
+      id: modifyTimestamp,
+      type: uint32,
+      endian: "little",
+      name: "Last modified timestamp",
+    },
+    { if: version >= 3392 && !_hashBased,
+      id: sourceSize,
+      type: uint32,
+      endian: "little",
+      name: "Source size (bytes)"
+    },
+    { if: version >= 3392 && _hashBased,
+      id: sipHash,
+      type: uint64,
+      endian: "little",
+      name: "SipHash of source"
+    },
+    // next follows marshalled Python code
+  ]
+}
