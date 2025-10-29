@@ -1,0 +1,224 @@
+// BinDef for the header of a Java bytecode file (.class)
+// https://en.wikipedia.org/wiki/Java_class_file
+
+{
+  meta: {
+    bdf: "0.4",
+    name: "Java class bytecode",
+    exts: [".class"],
+    mime: ["application/java-vm"],
+    doc: "Compiled bytecode for a single Java class that can be ran on the Java Virtual Machine (JVM)"
+  },
+  types: [
+    { id: ConstantType,
+      type: enum[uint8],
+      members: [
+        { id: UTF8_STRING,    value: 1,  doc: "UTF-8 string" }, //
+        { id: INTEGER,        value: 3,  doc: "Integer" }, //
+        { id: FLOAT,          value: 4,  doc: "Float" }, //
+        { id: LONG,           value: 5,  doc: "Long" }, //
+        { id: DOUBLE,         value: 6,  doc: "Double" }, //
+        { id: CLASS_REF,      value: 7,  doc: "Class reference" }, //
+        { id: STRING_REF,     value: 8,  doc: "String reference" }, //
+        { id: FIELD_REF,      value: 9,  doc: "Field reference" }, //
+        { id: METHOD_REF,     value: 10, doc: "Method reference" }, //
+        { id: INTERFACE_REF,  value: 11, doc: "Interface method reference" }, //
+        { id: NAME_TYPE_DESC, value: 12, doc: "Name and type descriptor" },
+        { id: METHOD_HANDLE,  value: 15, doc: "Method handle" }, //
+        { id: METHOD_TYPE,    value: 16, doc: "Method type" }, //
+        { id: DYNAMIC,        value: 17, doc: "Dynamic constant" },  //
+        { id: INVOKE_DYNAMIC, value: 18, doc: "InvokeDynamic instruction" }, //
+        { id: MODULE,         value: 19, doc: "Module" }, //
+        { id: PACKAGE,        value: 20, doc: "Package" } //
+      ]
+    },
+    { id: Constant,
+      type: struct,
+      endian: "big",
+      fields: [
+        { type: ConstantType, id: tagType, name: "Tag" },
+        { if: tagType == UTF8_STRING,
+          id: stringVal,
+          name: "String",
+          type: struct,
+          endian: "big",
+          fields: [
+            { type: uint16,       id: length,   name: "Length" },
+            { type: byte[length], id: contents, name: "Contents" }
+          ]
+        },
+        { if: tagType == INTEGER, id: integer, name: "Integer", type: uint32 },
+        { if: tagType == FLOAT,   id: float,   name: "Float", type: byte[4] },
+        { if: tagType == LONG || tagType == DOUBLE,
+          id: bit64Number,
+          name: "Number",
+          type: struct,
+          endian: "big",
+          fields: [
+            { type: uint32, id: highBytes },
+            { type: uint32, id: lowBytes },
+          ]
+        },
+        { if: tagType == CLASS_REF,
+          id: classRef,
+          name: "Class reference",
+          type: struct,
+          endian: "big",
+          fields: [
+            { type: uint16, id: nameIndex, name: "Name index" },
+          ]
+        },
+        { if: tagType == STRING_REF,
+          id: stringRef,
+          name: "String reference",
+          type: struct,
+          endian: "big",
+          fields: [
+            { type: uint16, id: stringIndex, name: "String index" }
+          ]
+        },
+        { if: tagType == FIELD_REF || tagType == METHOD_REF || tagType == INTERFACE_REF,
+          id: reference,
+          name: "Reference",
+          type: struct,
+          endian: "big",
+          fields: [
+            { type: uint16, id: classIndex,    name: "Class index" },
+            { type: uint16, id: nameTypeIndex, name: "Name and type index" },
+          ]
+        },
+        { if: tagType == NAME_TYPE_DESC,
+          id: nameTypeDesc,
+          name: "Name/type descriptor",
+          type: struct,
+          endian: "big",
+          fields: [
+            { type: uint16, id: nameIndex, name: "Name index" },
+            { type: uint16, id: descIndex, name: "Descriptor index" },
+          ]
+        },
+        { if: tagType == METHOD_HANDLE,
+          id: methodHandle,
+          name: "Method handle",
+          type: struct,
+          endian: "big",
+          fields: [
+            { type: uint16, id: referenceKind,  name: "Reference kind"},
+            { type: uint16, id: referenceIndex, name: "Reference index"},
+          ]
+        },
+        { if: tagType == METHOD_TYPE,
+          id: methodType,
+          name: "Method type",
+          type: struct,
+          endian: "big",
+          fields: [
+            { type: uint16, id: descriptorIndex, name: "Descriptor index" }
+          ]
+        },
+        { if: tagType == DYNAMIC || tagType == INVOKE_DYNAMIC,
+          id: dynamicOrInvoke,
+          name: "InvokeDynamic/dynamic",
+          type: struct,
+          endian: "big",
+          fields: [
+            { type: uint16, id: bootstrapMethodAttrIndex, name: "Bootstrap method attribute index" },
+            { type: uint16, id: nameTypeIndex,            name: "Name and type index" }
+          ]
+        },
+        { if: tagType == MODULE || tagType == PACKAGE,
+          id: moduleOrPackage,
+          name: "Module/package",
+          type: struct, 
+          endian: "big",
+          fields: [
+            { type: uint16, id: nameIndex, name: "Name index" }
+          ]
+        }
+      ]
+    },
+    { id: AttributeInfo,
+      type: struct,
+      endian: "big",
+      fields: [
+        { type: uint16, id: attrNameIndex, name: "Attribute name index" },
+        { type: uint32, id: attrLen,       name: "Attribute length" },
+        { type: array[attrLen], 
+          id: info, name: "Info", item: { type: uint8 } 
+        }
+      ]
+    },
+    { id: FieldInfo,
+      type: struct,
+      endian: "big",
+      fields: [
+        { type: uint16, id: accessFlags, name: "Access flags" },
+        { type: uint16, id: nameIndex,   name: "Name index" },
+        { type: uint16, id: descIndex,   name: "Descriptor index" },
+        { type: uint16, id: attrCount,   name: "Attributes count" },
+        { type: array[attrCount],
+          id: attributes,
+          name: "Attributes",
+          item: { type: AttributeInfo, name: "Attribute" }
+        }
+      ]
+    },
+    { id: MethodInfo,
+      type: struct,
+      endian: "big",
+      fields: [
+        { type: uint16, id: accessFlags, name: "Access flags" },
+        { type: uint16, id: nameIndex,   name: "Name index" },
+        { type: uint16, id: descIndex,   name: "Descriptor index" },
+        { type: uint16, id: attrCount,   name: "Attributes count" },
+        { type: array[attrCount],
+          id: attributes,
+          name: "Attributes",
+          item: { type: AttributeInfo, name: "Attribute" }
+        }
+      ]
+    },
+    { id: Header,
+      type: struct,
+      endian: "big",
+      fields: [
+        { type: magic,  match: "\xCA\xFE\xBA\xBE" },
+        { type: uint16, id: minorVersion,    name: "Minor version" },
+        { type: uint16, id: majorVersion,    name: "Major version" },
+        { type: uint16, id: constPoolCount,  name: "Constant pool count" },
+        { type: array[constPoolCount - 1], 
+          id: constPoolTable, 
+          name: "Constant pool table",
+          item: { type: Constant, name: "Constant" }
+        },
+        { type: uint16, id: accessFlags,     name: "Access flags" },
+        { type: uint16, id: thisClassIndex,  name: "Index to \"this\" class" },
+        { type: uint16, id: superClassIndex, name: "Index to \"super\" class" },
+        { type: uint16, id: interfaceCount,  name: "Interfaces count" },
+        { type: array[interfaceCount],
+          if: interfaceCount != 0,
+          id: interfaces, 
+          name: "Interfaces",
+          item: { type: uint16, id: index, name: "Index" }          
+        },
+        { type: uint16, id: fieldCount, name: "Fields count" },
+        { type: array[fieldCount],
+          if: fieldCount != 0,
+          id: fields,
+          name: "Fields",
+          item: { type: FieldInfo, id: field, name: "Field" }
+        },
+        { type: uint16, id: methodCount, name: "Methods count" },        
+        { type: array[methodCount],
+          if: methodCount != 0,
+          id: methods,
+          name: "Methods",
+          item: { type: MethodInfo, id: method, name: "Method" }
+        },
+      ]
+    }
+  ],
+  binary: [
+    { type: Header, name: "Header" },
+  ]
+}

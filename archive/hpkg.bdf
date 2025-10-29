@@ -1,0 +1,53 @@
+// BinDef for the Haiku Package Format (hpkg)
+// https://www.haiku-os.org/blog/apl/2021-02-28_look_at_hpkg/
+// https://www.haiku-os.org/docs/develop/packages/FileFormat.html#the-data-container-format
+
+{
+  meta: {
+    bdf: "0.4",
+    name: "Haiku Package",
+    mime: [], // none defined
+    exts: [".hpkg"],
+    doc: "XAR-inspired package format used by Haiku's package file system." 
+  },
+  types: [
+    { id: HeapCompressionType,
+      type: enum[uint16],
+      endian: "big",
+      members: [
+        { id: B_HPKG_COMPRESSION_NONE, value: 0x0, name: "None" },
+        { id: B_HPKG_COMPRESSION_ZLIB, value: 0x1, name: "zlib (lz77)" },
+      ]
+    },
+    { id: Header,
+      type: struct,
+      endian: "big",
+      fields: [
+        { type: magic, match: ["hpkg"] },
+        { type: uint16, id: headerSize,   name: "Header size" },
+        { type: uint16, id: version,      name: "Format version" },
+        { type: uint64, id: totalSize,    name: "File size (bytes)" },
+        { type: uint16, id: minorVersion, name: "Minor version" },
+
+        { type: HeapCompressionType, 
+          id: heapCompression, name: "Heap compression format" 
+        },
+        { type: uint32, id: heapChunkSize,        name: "Heap chunk size (bytes)" },
+        { type: uint64, id: heapSizeCompressed,   name: "Heap compressed size (bytes)" },
+        { type: uint64, id: heapSizeUncompressed, name: "Heap uncompressed size (bytes)" },
+
+        { type: uint32, id: attributesLength,     name: "Attributes length" },
+        { type: uint32, id: attrStringsLength,    name: "Attributes strings length" },
+        { type: uint32, id: attrStringsCount,     name: "Attributes strings count" },
+        { type: uint32, id: _reserved1 },
+
+        { type: uint64, id: tocLength,            name: "TOC length" },
+        { type: uint64, id: tocStringsLength,     name: "TOC strings length" },
+        { type: uint64, id: tocStringsCount,      name: "TOC strings count" }
+      ]  
+    }
+  ],
+  binary: [
+    { type: Header, id: header, name: "Header" }
+  ]
+}

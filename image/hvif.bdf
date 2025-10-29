@@ -1,0 +1,166 @@
+// BinDef for the Haiku Vector Icon Format (HVIF)
+// 
+// References (I couldn't find a proper spec for this):
+//   https://blog.leahhanson.us/post/recursecenter2016/haiku_icons.html
+//   https://git.beepboop.network/hjsc/hvif-lightf
+
+{
+  meta: {
+    bdf: "0.4",
+    name: "Haiku Vector Icon",
+    mime: [], // none defined
+    exts: [".hvif"],
+    doc: "Vector icon format used by Haiku designed to be compact enough that it can be " +
+         "stored in file metadata." 
+  },
+  types: [
+    { id: StyleType,
+      type: enum[uint8],
+      members: [
+        { id: ST_SOLID_COLOR,          value: 1, doc: "Solid color" },
+        { id: ST_GRADIENT,             value: 2, doc: "Gradient" },
+        { id: ST_SOLID_COLOR_NO_ALPHA, value: 3, doc: "Solid color (no alpha)" },
+        { id: ST_SOLID_GRAY,           value: 4, doc: "Gray" },
+        { id: ST_SOLID_GRAY_NO_ALPHA,  value: 5, doc: "Gray (no alpha)" },
+      ]
+    },
+    { id: GradientType,
+      type: enum[uint8],
+      members: [
+        { id: GRADIENT_LINEAR,   value: 0, doc: "Linear" },
+        { id: GRADIENT_CIRCULAR, value: 1, doc: "Circular" },
+        { id: GRADIENT_DIAMOND,  value: 2, doc: "Diamond" },
+        { id: GRADIENT_CONIC,    value: 3, doc: "Comic" },
+        { id: GRADIENT_XY,       value: 4, doc: "X-Y" },
+        { id: GRADIENT_SQRT_XY,  value: 5, doc: "Sqrt. X-Y" }
+      ]
+    },
+
+    // TODO: Accessing these requires doing .value which isn't desired.
+    { id: GRADIENT_FLAG_TRANSFORM, type: var, value: 1 << 1 },
+    { id: GRADIENT_FLAG_NO_ALPHA,  type: var, value: 1 << 2 },
+    { id: GRADIENT_FLAG_GRAYS,     type: var, value: 1 << 4 },
+
+    { id: RgbColor,
+      type: struct,
+      endian: "little",
+      fields: [
+        { type: uint8, id: red,   name: "Red" },
+        { type: uint8, id: green, name: "Green" },
+        { type: uint8, id: blue,  name: "Blue" },
+      ]
+    },
+    { id: RgbaColor,
+      type: struct,
+      endian: "little",
+      fields: [
+        { type: uint8, id: red,   name: "Red" },
+        { type: uint8, id: green, name: "Green" },
+        { type: uint8, id: blue,  name: "Blue" },
+        { type: uint8, id: alpha, name: "Alpha" }
+      ]
+    },
+    { id: AlphaGrayColor,
+      type: struct,
+      endian: "little",
+      fields: [
+        { type: uint8, id: value, name: "Value" },
+        { type: uint8, id: alpha, name: "Alpha" },
+      ],
+    },
+    { id: OpaqueGrayColor,
+      type: struct,
+      endian: "little",
+      fields: [
+        { type: uint8, id: value, name: "Value" },
+      ]
+    },
+    { id: Gradient,
+      type: struct,
+      endian: "little",
+      fields: [
+        { type: GradientType, id: type,      name: "Gradient type" },
+        { type: uint8,        id: flags,     name: "Flags" },
+        { type: uint8,        id: stopCount, name: "Stop count" },
+        
+        // TODO: A switch or if-else would be appreciated here.
+        { type: array[stopCount],
+          id: components,
+          name: "Components",
+          item: {
+            type: struct,
+            endian: "little",
+            id: component,
+            name: "Component",
+            fields: [
+              { type: uint8, id: stopOffset, name: "Stop offset" },
+              { if: (flags & GRADIENT_FLAG_NO_ALPHA.value != 0 &&
+                     flags & GRADIENT_FLAG_GRAYS.value    != 0),
+                type: OpaqueGrayColor, id: color, name: "Color"
+              },
+              { if: (flags & GRADIENT_FLAG_NO_ALPHA.value != 0 &&
+                     flags & GRADIENT_FLAG_GRAYS.value    == 0),
+                type: RgbColor, id: color, name: "Color"
+              },
+              { if: (flags & GRADIENT_FLAG_NO_ALPHA.value == 0 &&
+                     flags & GRADIENT_FLAG_GRAYS.value    != 0),
+                type: AlphaGrayColor, id: color, name: "Color"
+              },
+              { if: (flags & GRADIENT_FLAG_NO_ALPHA.value == 0 &&
+                     flags & GRADIENT_FLAG_GRAYS.value    == 0),
+                type: RgbaColor, id: color, name: "Color"
+              }
+            ]
+          }
+        },
+        // TODO: This is a 3x2 transform matrix using float24.
+        //       Add float types.
+        { if: flags & GRADIENT_FLAG_TRANSFORM.value != 0,
+          type: byte[18], id: transform, name: "Transform bytes"
+        }
+      ]
+    },
+    { id: Style,
+      type: struct,
+      endian: "little",
+      fields: [
+        { type: StyleType, id: style, name: "Style type" },
+
+        // Solid color (transparent)
+        { if: style == ST_SOLID_COLOR,
+          type: RgbaColor, id: color, name: "Color"
+        },
+
+        // Solid color (opaque)
+        { if: style == ST_SOLID_COLOR_NO_ALPHA,
+          type: RgbColor, id: color, name: "Color"
+        },
+
+        // Gray color (transparent)
+        { if: style == ST_SOLID_GRAY,
+          type: AlphaGrayColor, id: color, name: "Color"
+        },
+        
+        // Gray color (opaque)
+        { if: style == ST_SOLID_GRAY_NO_ALPHA,
+          type: OpaqueGrayColor, id: color, name: "Color"
+        },
+
+        // Gradient
+        { if: style == ST_GRADIENT,
+          type: Gradient, id: gradient, name: "Gradient"
+        },
+      ]
+    }
+  ],
+  binary: [
+    { type: magic, match: ["ncif"] }, // in little endian: ficn = flat icon
+    { type: uint8, id: styleCount, name: "Style count" },
+    { type: array[styleCount],
+      id: styles,
+      name: "Styles",
+      item: { type: Style, name: "Style" }
+    },
+    // TODO: Parse the other two sections (paths and shapes)
+  ]
+}
