@@ -2,7 +2,7 @@
 // 
 // References (I couldn't find a proper spec for this):
 //   https://blog.leahhanson.us/post/recursecenter2016/haiku_icons.html
-//   https://git.beepboop.network/hjsc/hvif-lightf
+//   https://git.beepboop.network/hjsc/hvif-light
 
 {
   meta: {
@@ -30,7 +30,7 @@
         { id: GRADIENT_LINEAR,   value: 0, doc: "Linear" },
         { id: GRADIENT_CIRCULAR, value: 1, doc: "Circular" },
         { id: GRADIENT_DIAMOND,  value: 2, doc: "Diamond" },
-        { id: GRADIENT_CONIC,    value: 3, doc: "Comic" },
+        { id: GRADIENT_CONIC,    value: 3, doc: "Conic" },
         { id: GRADIENT_XY,       value: 4, doc: "X-Y" },
         { id: GRADIENT_SQRT_XY,  value: 5, doc: "Sqrt. X-Y" }
       ]
