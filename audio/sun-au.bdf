@@ -1,0 +1,55 @@
+{
+  meta: {
+	bdf: "0.4",
+	name: "Sun Au audio data",
+	mime: ["audio/basic"],
+	exts: [".au", ".snd"]	
+  },
+  types: [
+    { id: Encoding, type: enum[uint32], endian: "big",
+      members: [
+    	{ id: UNSPECIFIED,           value: 0,  doc: "Unspecified" },
+    	{ id: G711_ULAW_8BIT,        value: 1,  doc: "8-bit G.711 μ-law" },
+    	{ id: LINEAR_PCM_8BIT,       value: 2,  doc: "8-bit linear PCM" },
+    	{ id: LINEAR_PCM_16BIT,      value: 3,  doc: "16-bit linear PCM" },
+    	{ id: LINEAR_PCM_24BIT,      value: 4,  doc: "24-bit linear PCM" },
+    	{ id: LINEAR_PCM_32BIT,      value: 5,  doc: "32-bit linear PCM" },
+    	{ id: IEEE_FLOAT_32BIT,      value: 6,  doc: "32-bit IEEE floating point" },
+    	{ id: IEEE_FLOAT_64BIT,      value: 7,  doc: "64-bit IEEE floating point" },
+    	{ id: FRAGMENTED,            value: 8,  doc: "Fragmented sample data" },
+    	{ id: NESTED,                value: 9,  doc: "Nested (unclear format)" },
+    	{ id: DSP_PROGRAM,           value: 10, doc: "DSP program" },
+    	{ id: FIXED_POINT_8BIT,      value: 11, doc: "8-bit fixed point" },
+    	{ id: FIXED_POINT_16BIT,     value: 12, doc: "16-bit fixed point" },
+    	{ id: FIXED_POINT_24BIT,     value: 13, doc: "24-bit fixed point" },
+    	{ id: FIXED_POINT_32BIT,     value: 14, doc: "32-bit fixed point" },
+    	{ id: UNASSIGNED,            value: 15, doc: "(Unassigned)" },
+    	{ id: NON_AUDIO_DISPLAY,     value: 16, doc: "non-audio display data" },
+    	{ id: ULAW_SQUELCH,          value: 17, doc: "μ-law Squelch format" },
+    	{ id: LINEAR_EMPHASIS_16BIT, value: 18, doc: "16-bit linear with emphasis" },
+    	{ id: LINEAR_COMPRESS_16BIT, value: 19, doc: "16-bit linear compressed" },
+    	{ id: LINEAR_EMP_COMP_16BIT, value: 20, doc: "16-bit linear with emphasis and compression" },
+    	{ id: MUSIC_KIT_DSP_CMD,     value: 21, doc: "Music kit DSP commands" },
+    	{ id: MUSIC_KIT_DSP_SMP,     value: 22, doc: "Music kit DSP commands samples" },
+    	{ id: G721_4BIT_ADPCM,       value: 23, doc: "ITU-T G.721 4-bit ADPCM" },
+    	{ id: G722_SD_ADPCM,         value: 24, doc: "ITU-T G.722 SB-ADPCM" },
+    	{ id: G723_3BIT_ADPCM,       value: 25, doc: "ITU-T G.723 3-bit ADPCM" },
+    	{ id: G723_5BIT_ADPCM,       value: 26, doc: "ITU-T G.723 5-bit ADPCM" },
+    	{ id: G711_ALAW_8BIT,        value: 27, doc: "8-bit G.711 A-law" }
+	  ]
+	},
+	{ id: Header, type: struct, endian: "big",
+	  fields: [
+		{ type: magic, match: [".snd"] },
+		{ type: uint32,   id: dataOffset,       name: "Offset to data"},
+		{ type: uint32,   id: dataSize,         name: "Size of data (bytes)"},
+		{ type: Encoding, id: encoding,         name: "Encoding" },
+		{ type: uint32,   id: samplesPerSecond, name: "Samples per second" },
+		{ type: uint32,   id: channels,         name: "Number of channels" }
+	  ]
+	}
+  ],
+  binary: [
+	{ type: Header, id: header, name: "Header" }
+  ]
+}

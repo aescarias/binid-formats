@@ -1,0 +1,31 @@
+{
+  meta: {
+    bdf: "0.4",
+    name: "Audio Interchange File Format (AIFF) data",
+    exts: [".aiff", ".aif", ".aifc"],
+    mime: ["audio/x-aiff", "audio/aiff"]
+  },
+  types: [
+    { id: MainChunk, type: struct, endian: "big",
+      fields: [
+        { type: magic,  match: ["FORM"] },
+        { type: uint32, id: fileSize,  name: "File size (bytes)" },
+        { type: magic,  match: ["AIFF"] },
+      ]
+    },
+    { id: Chunk, type: struct, endian: "big",
+      fields: [
+        { type: byte[4],    id: ident, name: "Chunk ID"},
+        { type: int32,      id: size,  name: "Chunk size (bytes)" },
+        { type: byte[size], id: data,  name: "Chunk data" }
+      ]
+    }
+  ],
+  binary: [
+    { type: MainChunk,  id: header, name: "Header" },
+    { type: array[eos], id: chunks, name: "Chunks", 
+      item: { type: Chunk, name: "Chunk" }
+    }
+  ]
+
+}

@@ -15,8 +15,8 @@
       type: enum[uint16],
       endian: "big",
       members: [
-        { id: B_HPKG_COMPRESSION_NONE, value: 0x0, name: "None" },
-        { id: B_HPKG_COMPRESSION_ZLIB, value: 0x1, name: "zlib (lz77)" },
+        { id: B_HPKG_COMPRESSION_NONE, value: 0x0, doc: "None" },
+        { id: B_HPKG_COMPRESSION_ZLIB, value: 0x1, doc: "zlib (lz77)" },
       ]
     },
     { id: Header,
