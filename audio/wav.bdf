@@ -1,13 +1,168 @@
+// BinDef for the contents of a .wav/.wave file
+//
+// Produced from:
+// - https://www.recordingblogs.com/wiki/wave-file-format
+// - http://soundfile.sapp.org/doc/WaveFormat/
+// - https://www-mmsp.ece.mcgill.ca/Documents/AudioFormats/WAVE/Docs/RIFFNEW.pdf
+// - https://wavref.til.cafe/
+
 {
   meta: {
-    bdf: "0.1",
-    name: "Waveform Audio file",
-    mime: ["audio/wav"],
-    exts: [".wav"]
+    bdf: "0.5",
+    name: "Waveform (WAVE) audio data",
+    exts: [".wav", ".wave"],
+    mime: ["audio/vnd.wave", "audio/wav", "audio/wave"],
+    doc:  "File format standard developed by Microsoft and IBM for storing an audio " +
+          "bitstream. Based on RIFF, the data is a series of chunks containing " +
+          "metadata as well as usually uncompressed PCM audio."
   },
+  types: [
+    { id: FormatTag, type: enum[uint16], endian: "little",
+      members: [
+        { id: WAVE_FORMAT_PCM,        value: 0x1,    doc: "PCM" },
+        { id: WAVE_FORMAT_IEEE_FLOAT, value: 0x3,    doc: "IEEE float" },
+        { id: WAVE_FORMAT_ALAW,       value: 0x6,    doc: "8-bit ITU-T G.711 A-law" },
+        { id: WAVE_FORMAT_ULAW,       value: 0x7,    doc: "8-bit ITU-T G.711 μ-law" },
+        { id: WAVE_FORMAT_EXTENSIBLE, value: 0xFFFE, doc: "Extensible" },
+      ]
+    },
+    { id: MIDISampleLoopType, type: enum[uint32], endian: "little",
+      members: [
+        { id: FORWARD_LOOP,     value: 0, doc: "Forward loop" },
+        { id: ALTERNATING_LOOP, value: 1, doc: "Alternating loop (forward/backward)" },
+        { id: BACKWARD_LOOP,    value: 2, doc: "Backward loop" },
+        { id: RESERVED,         value: { from: 3, to: 31 }, 
+          doc: "Reserved for future use" },
+        { id: SAMPLER_SPECIFIC, value: { from: 32, to: 0xFFFFFFFF },
+          doc: "Sampler/manufacturer specific" }
+      ]
+    },
+    { id: MIDISampleLoop, type: struct, endian: "little",
+      fields: [
+        { type: uint32,             id: ident,    name: "Loop ID" },
+        { type: MIDISampleLoopType, id: type,     name: "Loop type" },
+        { type: uint32,             id: start,    name: "Start point (sample number)" },
+        { type: uint32,             id: end,      name: "End point (sample number)" },
+        { type: uint32,             id: fraction, name: "Fine-tune resolution" },
+        { type: uint32,             id: loops,    name: "Number of loops (0 = inf)" }
+      ]
+    },
+    { id: MIDISampleChunk, type: struct, endian: "little",
+      fields: [
+        { type: uint32,  id: length,            name: "Size (bytes)" },
+        { type: var,     id: _start,            value: file.pos },
+        { type: byte[4], id: manufacturer,      name: "Manufacturer code" },
+        { type: byte[4], id: product,           name: "Product ID" },
+        { type: uint32,  id: samplePeriod,      name: "Sampling period (ns)" },
+        { type: uint32,  id: midiUnity,         name: "MIDI unity note" },
+        { type: uint32,  id: midiPitch,         name: "MIDI pitch fraction" },
+        { type: uint32,  id: smpteFormat,       name: "SMPTE format" },
+        { type: uint32,  id: smpteOffset,       name: "SMPTE time offset" },
+        { type: uint32,  id: numSampleLoops,    name: "Number of sample loops" },
+        { type: uint32,  id: samplerDataLength, name: "Length of sampler data (bytes)" },
+        { if: numSampleLoops > 0, 
+          type: array[numSampleLoops+1], id: sampleLoops, name: "Sample loops", 
+          item: { type: MIDISampleLoop, id: sampleLoop, name: "Sample loop" },  
+        },
+        { if: samplerDataLength > 0,
+          type: byte[samplerDataLength], id: samplerData, name: "Sampler data" },
+        { type: byte[_start + length - file.pos] }
+      ]
+    },
+    { id: FormatChunk, type: struct, endian: "little",
+      fields: [
+        { type: var,       id: _start,        value: file.pos },
+        { type: uint32,    id: length,        name: "Size (bytes)" },
+        { type: FormatTag, id: formatTag,     name: "Format type" },
+        { type: uint16,    id: numChannels,   name: "Number of channels" },
+        { type: uint32,    id: sampleRate,    name: "Sample rate (hz)" },
+        { at: [6, "current"],
+          type: uint16,    id: bitsPerSample, name: "Bits per sample" },
+        { at: [-8, "current"],
+          type: uint32,    id: dataRate,      name: "Data rate (bytes)",
+          valid: dataRate == sampleRate * numChannels * 1/8 * bitsPerSample  
+        },
+        { type: uint16,    id: blockAlign,    name: "Sample width (bytes)",
+          valid: blockAlign == numChannels * 1/8 * bitsPerSample
+        },
+        { type: uint16,    id: _alreadyParsedBPS },
+        { if: formatTag == WAVE_FORMAT_EXTENSIBLE, 
+          type: uint16,    id: sizeOfExtension, name: "Size of subformat (bytes)" },
+        { if: formatTag == WAVE_FORMAT_EXTENSIBLE && sizeOfExtension > 0,
+          type: struct, id: extension, name: "Subformat", endian: "little",
+          fields: [
+            { type: uint16,   id: validBitsPerSample, name: "Valid bits per sample" },
+            { type: uint32,   id: channelMask,        name: "Channel mask" },
+            { type: byte[16], id: guid,               name: "Subformat GUID" }
+          ] 
+        },
+        { type: var, id: _padding, value: file.pos - _start - length },
+        { type: byte[_padding], if: _padding > 0 }
+      ]
+    },
+    { id: FactChunk, type: struct, endian: "little",
+      fields: [
+        { type: uint32, id: length, name: "Length (bytes)" },
+        { type: uint32, id: sampleCount, name: "Samples" }
+      ]
+    },
+    { id: ListChunk, type: struct, endian: "little",
+      fields: [        
+        { type: uint32,  id: length, name: "Length (bytes)" },
+
+        { type: var,     id: _start,  value: file.pos },
+        { type: var,     id: _end,    value: _start + length },
+
+        { type: byte[4], id: type,   name: "Type" },
+        { switch: type,
+          cases: {
+            "INFO": { while: file.pos < _end,
+                      type: array[eos], id: chunk, name: "Info elements", 
+                      item: { type: InfoListChunk, name: "Info chunk" } }
+          },
+          default: { type: byte[length], id: data, name: "Data" },
+        }
+      ]
+    },
+    { id: InfoListChunk, type: struct, endian: "little",
+      fields: [
+        { type: byte[4],    id: ident, name: "Identifier" },
+        { type: uint32,     id: size,  name: "Length (bytes)" },
+        { type: byte[size], id: data,  name: "Data" }
+      ]
+    },
+    { id: GenericChunk, type: struct, endian: "little",
+      fields: [
+        { type: uint32,       id: length, name: "Data length (bytes)" },
+        { type: byte[length], id: data,   name: "Data" }
+      ] 
+    }
+  ],
   binary: [
-    { type: magic, match: "RIFF" },
-    { type: uint32, endian: "little" },
-    { type: magic, match: "WAVE" },
+    { type: magic,  match: "RIFF" },
+    { type: uint32, id: fileSize, name: "File size (bytes)", endian: "little" },
+    { type: magic,  match: "WAVE" },
+    { type: array[eos], 
+      id: chunks,
+      name: "Chunks",
+      item: {
+        type: struct,
+        id: chunk,
+        endian: "little",
+        name: "Chunk",
+        fields: [
+          { type: byte[4], id: ident, name: "Identifier" },
+          { switch: ident,
+            cases: {
+              "fmt ": { type: FormatChunk,     id: chunk, name: "Format chunk" },
+              "LIST": { type: ListChunk,       id: chunk, name: "List chunk" },
+              "fact": { type: FactChunk,       id: chunk, name: "Fact chunk" },
+              "smpl": { type: MIDISampleChunk, id: chunk, name: "Sampler chunk" }
+            },
+            default: { type: GenericChunk, id: chunk, name: "Generic data chunk" }
+          },
+        ]
+      }
+    }
   ]
 }
