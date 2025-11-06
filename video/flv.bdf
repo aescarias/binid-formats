@@ -1,47 +1,54 @@
 // BinDef for the FLV multimedia format
 // Produced from https://en.wikipedia.org/wiki/Flash_Video
-
 {
   meta: {
-    bdf: "0.3",
+    bdf: "0.4",
     name: "Flash Video (FLV) multimedia",
     mime: ["video/x-flv"],
     exts: [".flv"],
   },
-  binary: [
-    { id: header,
-      type: struct,
-      endian: "big",
-      fields: [
-        { type: magic,  match: "FLV" },
-        { type: uint8,  id: version, name: "Version", valid: version == 0x01 },
-        { type: uint8,  id: flags,   name: "Flags" },
-        { type: uint32, id: size,    name: "Header size (bytes)" }
+  types: [
+    { id: TypeFlags, type: enum[uint8],
+      members: [
+        { id: VIDEO,       value: 0x01, doc: "Video" },
+        { id: AUDIO,       value: 0x04, doc: "Audio" },
+        { id: AUDIO_VIDEO, value: 0x05, doc: "Audio + video" },
       ]
     },
+    { id: PacketType, type: enum[uint8],
+      members: [
+        { id: AUDIO,       value: 8,  doc: "Audio" },
+        { id: VIDEO,       value: 9,  doc: "Video" },
+        { id: SCRIPT_DATA, value: 18, doc: "Script data" }
+      ]
+    },
+    { id: Header, type: struct, endian: "big",
+      fields: [
+        { type: magic,     match: "FLV" },
+        { type: uint8,     id: version, name: "Version", valid: version == 0x01 },
+        { type: TypeFlags, id: flags,   name: "Flags" },
+        { type: uint32,    id: size,    name: "Header size (bytes)" }
+      ]
+    },
+    { id: Packet, type: struct, endian: "big",
+      fields: [
+        { type: uint32,     id: prevPacketSize, name: "Size of previous packet (bytes)" },
+        { type: PacketType, id: packetType,     name: "Packet type" },
+        { type: uint24,     id: payloadSize,    name: "Payload size (bytes)" },
+        { type: uint32,     id: timestamp,      name: "Timestamp" },
+        { type: uint24,     id: streamID,       name: "Stream ID" },
+        { type: byte[payloadSize], 
+          id: payload, name: "Payload data" }
+      ]
+    }
+  ],
+  binary: [
+    { type: Header, id: header, name: "Header" },
     { id: packets,
       type: array[eos],
       name: "Packets",
       at: header.size,
-      item: {
-        name: "Packet",
-        type: struct,
-        endian: "big",
-        fields: [
-          { type: uint32,   id: prevPacketSize, name: "Size of previous packet (bytes)" },
-          { type: uint8,    id: packetType,     name: "Packet type" },
-          { type: array[3], id: _psb, item: { type: uint8 }},
-          { type: var,      id: payloadSize,    name: "Payload size (bytes)",
-            value: _psb[0]<<16 | _psb[1]<<8 | _psb[2] 
-          },
-          { type: uint32,   id: timestamp,      name: "Timestamp" },
-          { type: array[3], id: _sib, item: { type: uint8 }},
-          { type: var,      id: streamID,    name: "Stream ID",
-            value: _sib[0]<<16 | _sib[1]<<8 | _sib[2] 
-          },
-          { type: byte[payloadSize], id: payload, name: "Payload data" }
-        ]
-      }
+      item: { type: Packet, name: "Packet" }
     }
   ]
 }
