@@ -3,13 +3,13 @@
 
 {
   meta: {
-    bdf: "0.1",
+    bdf: "0.5",
     name: "Windows Shell Link (Shortcut)",
     exts: [".lnk", ".url"],
     mime: ["application/x-ms-shortcut"]
   },
   binary: [
-    { type: magic, match: "\x4c\x00\x00\x00" },
+    { type: byte[4], magic: _ == "\x4c\x00\x00\x00" },
     { type: byte[16], id: _clsid, 
       valid: _clsid == "\x01\x14\x02\x00\x00\x00\x00\x00\xc0\x00\x00\x00\x00\x00\x00\x46" },
     { type: uint32,   id: flags,        endian: "little", name: "Flags" },

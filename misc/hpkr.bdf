@@ -4,7 +4,7 @@
 
 {
   meta: {
-    bdf: "0.4",
+    bdf: "0.5",
     name: "Haiku Package Repository",
     mime: [], // none defined
     exts: [],
@@ -25,7 +25,7 @@
       type: struct,
       endian: "big",
       fields: [
-        { type: magic, match: ["hpkr"] },
+        { type: byte[4], magic: _ == "hpkr" },
         { type: uint16, id: headerSize,   name: "Header size" },
         { type: uint16, id: version,      name: "Format version" },
         { type: uint64, id: totalSize,    name: "File size (bytes)" },

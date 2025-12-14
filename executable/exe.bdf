@@ -1,6 +1,6 @@
 {
   meta: {
-    bdf: "0.1",
+    bdf: "0.5",
     name: "MZ Portable Executable",
     mime: [
       "application/vnd.microsoft.portable-executable", 
@@ -9,6 +9,6 @@
     exts: [".exe", ".dll", ".sys"],
   },
   binary: [
-    { type: magic, match: "MZ" } 
+    { type: byte[2], magic: _ == "MZ" } 
   ]
 }

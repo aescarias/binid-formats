@@ -1,11 +1,11 @@
 {
   meta: {
-    bdf: "0.1",
+    bdf: "0.5",
     name: "OpenType font",
     mime: ["font/otf"],
     exts: [".otf"]
   },
   binary: [
-    { type: magic, match: "OTTO" }
+    { type: byte[4], magic: _ == "OTTO" }
   ]
 }

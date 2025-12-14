@@ -1,11 +1,11 @@
 {
   meta: {
-    bdf: "0.1",
+    bdf: "0.5",
     name: "Adobe Photoshop Document",
     mime: ["image/vnd.adobe.photoshop"],
     exts: [".ps"],
   },
   binary: [
-    { type: magic, match: "8BPS" } 
+    { type: byte[4], magic: _ == "8BPS" } 
   ]
 }

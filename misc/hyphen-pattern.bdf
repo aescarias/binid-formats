@@ -3,7 +3,7 @@
 
 {
   meta: {
-    bdf: "0.3",
+    bdf: "0.5",
     name: "Google Hyphenation Pattern Binary",
     mime: [],
     exts: [".hyb"],
@@ -17,7 +17,7 @@
       type: struct,
       endian: "little",
       fields: [
-        { type: magic, match: "hy\xADb" },
+        { type: byte[4], magic: _ == "hy\xADb" },
         { id: version,        type: uint32, name: "Version" },
         { id: alphabetOffset, type: uint32, name: "Alphabet table offset" },
         { id: trieOffset,     type: uint32, name: "Trie offset" },

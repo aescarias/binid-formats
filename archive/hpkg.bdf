@@ -4,7 +4,7 @@
 
 {
   meta: {
-    bdf: "0.4",
+    bdf: "0.5",
     name: "Haiku Package",
     mime: [], // none defined
     exts: [".hpkg"],
@@ -23,7 +23,7 @@
       type: struct,
       endian: "big",
       fields: [
-        { type: magic, match: ["hpkg"] },
+        { type: byte[4], magic: _ == "hpkg" },
         { type: uint16, id: headerSize,   name: "Header size" },
         { type: uint16, id: version,      name: "Format version" },
         { type: uint64, id: totalSize,    name: "File size (bytes)" },

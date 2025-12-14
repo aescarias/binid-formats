@@ -1,16 +1,17 @@
 {
   meta: {
-    bdf: "0.1",
+    bdf: "0.5",
     name: "Roshal Archive (RAR)",
     mime: ["application/x-rar-compressed"],
     exts: [".rar"]
   },
   binary: [
-    { type: magic, 
-      match: [
-        "Rar!\x1a\x07\x00",
-        "Rar!\x1a\x07\x01\x00",
-      ]
+    { type: byte[7], 
+      id: _magic,
+      magic: has(["Rar!\x1a\x07\x00", "Rar!\x1a\x07\x01"], _)
+    },
+    { if: slice(_magic, 6, 7) == "\x01",
+      type: byte, magic: _ == "\x00" 
     }
   ]
 }

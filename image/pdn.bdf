@@ -1,12 +1,12 @@
 {
   meta: {
-    bdf: "0.4",
+    bdf: "0.5",
     name: "Paint.NET image file",
     mime: ["image/x-paintnet"],
     exts: [".pdn"],
   },
   binary: [
-    { type: magic, match: "PDN3" },
+    { type: byte[4], magic: _ == "PDN3" },
     { type: uint24, id: headerSize, endian: "little", name: "Header size (bytes)" },
     { type: byte[headerSize], id: header, name: "XML header" }
     // TODO: After the header follows NRBF-serialized content which we can't parse yet.

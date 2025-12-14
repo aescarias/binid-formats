@@ -40,7 +40,7 @@
 	},
 	{ id: Header, type: struct, endian: "big",
 	  fields: [
-		{ type: magic, match: [".snd"] },
+		{ type: byte[4],  magic: _ == ".snd" },
 		{ type: uint32,   id: dataOffset,       name: "Offset to data"},
 		{ type: uint32,   id: dataSize,         name: "Size of data (bytes)"},
 		{ type: Encoding, id: encoding,         name: "Encoding" },

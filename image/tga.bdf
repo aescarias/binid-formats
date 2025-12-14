@@ -4,13 +4,13 @@
 
 {
   meta: {
-    bdf: "0.3",
+    bdf: "0.5",
     name: "Truevision TGA image (version 2)",
     exts: [".tga"],
     mime: ["image/x-targa", "image/x-tga"] 
   },
   binary: [
-    { type: magic, match: "TRUEVISION-XFILE.\x00", at: [-18, "end"] },
+    { type: byte[18], magic: _ == "TRUEVISION-XFILE.\x00", at: [-18, "end"] },
     { at: 0,
       id: header,
       type: struct,

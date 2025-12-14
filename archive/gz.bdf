@@ -6,6 +6,6 @@
     exts: [".gz"]
   },
   binary: [
-    { type: magic, match: "\x1f\x8b" }
+    { type: byte[2], magic: _ == "\x1f\x8b" }
   ]
 }

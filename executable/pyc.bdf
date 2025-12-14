@@ -5,7 +5,7 @@
 
 {
   meta: {
-    bdf: "0.4",
+    bdf: "0.5",
     name: "CPython compiled bytecode",
     exts: [".pyc"],
     mime: [],
@@ -374,8 +374,8 @@
     }
   ],
   binary: [
-    { type: magic, 
-      match: [
+    { type: byte[2], 
+      magic: has([
         "\x99\x4e", "\xfc\xc4", "\x87\xc6", "\x2a\xeb", "\x2d\xed", "\x3b\xf2", "\x45\xf2", 
         "\x59\xf2", "\x63\xf2", "\x6d\xf2", "\x77\xf2", "\x81\xf2", "\x8b\xf2", "\x8c\xf2", 
         "\x95\xf2", "\x9f\xf2", "\xa9\xf2", "\xb3\xf2", "\xc7\xf2", "\xd1\xf2", "\xdb\xf2", 
@@ -410,10 +410,10 @@
         "\x21\x0e", "\x22\x0e", "\x23\x0e", "\x24\x0e", "\x25\x0e", "\x26\x0e", "\x27\x0e", 
         "\x28\x0e", "\x29\x0e", "\x2a\x0e", "\x2b\x0e", "\x42\x0e", "\x43\x0e", "\x44\x0e", 
         "\x45\x0e", "\x46\x0e", "\x47\x0e",
-      ]
+      ], _)
     },
     { type: BytecodeMagic, id: version, at: 0, name: "Bytecode version" },
-    { type: magic, match: "\r\n" },
+    { type: byte[2], magic: _ == "\r\n" },
 
     // PEP 552 mentioned that these two fields were big endian at some point
     // but I don't think this was ever the case.

@@ -1,6 +1,6 @@
 {
   meta: {
-    bdf: "0.1",
+    bdf: "0.5",
     name: "Extended Module (XM)",
     mime: ["audio/x-xm"],
     exts: [".xm"],
@@ -10,7 +10,7 @@
       "other trackers such as MilkyTracker and Mikmod."
   },
   binary: [
-    { type: magic,    match: "Extended Module: " },
+    { type: byte[17], magic: _ == "Extended Module: " },
     
     { type: byte[20], id: moduleName,      name: "Module name",  strip: true },
     { type: uint8 }, // pad byte

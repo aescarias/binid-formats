@@ -1,6 +1,6 @@
 {
   meta: {
-    bdf: "0.2",
+    bdf: "0.5",
     name: "Executable and Linkable Format",
     mime: ["application/x-executable"],
     exts: [],
@@ -271,7 +271,7 @@
       endian: _elfEndian == 1 ? "little" : "big",
       at: 0,
       fields: [
-        { type: magic, match: "\x7fELF" },
+        { type: byte[4], magic: _ == "\x7fELF" },
         { id: class,      type: ELFClass,   name: "Class" },
         { id: endian,     type: ELFEndian,  name: "Endianness", valid: endian == _elfEndian },
         { id: version,    type: uint8,      name: "Version", valid: version == 1 },

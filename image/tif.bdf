@@ -6,14 +6,14 @@
     mime: ["image/tiff", "image/tiff-fx"]
   },
   binary: [
-    { id: _tifEndian, type: magic, match: ["II", "MM"] },
+    { id: _tifEndian, type: byte[2], magic: has(["II", "MM"], _) },
     { id: header,
       name: "Header",
       type: struct,
       endian: _tifEndian == "II" ? "little" : "big",
       at: 0,
       fields: [
-        { id: byteOrder, type: magic, match: ["II", "MM"], name: "Byte order" },
+        { id: byteOrder, type: byte[2], magic: has(["II", "MM"], _), name: "Byte order" },
         { id: version, type: uint16, valid: version == 0x2a, name: "Version" },
         { id: ifdOffset, type: uint32, name: "First IFD at" }
       ]

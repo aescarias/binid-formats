@@ -1,12 +1,12 @@
 {
   meta: {
-    bdf: "0.4",
+    bdf: "0.5",
     name: "Quite Okay Audio (QOA) data",
     mime: ["audio/x-qoa"],
     exts: [".qoa"]
   },
   binary: [
-    { type: magic, match: "qoaf" },
+    { type: byte[4], magic: _ == "qoaf" },
     { id: samples, type: uint32, endian: "big", name: "Samples per channel" },
     { id: frame,
       name: "First frame",

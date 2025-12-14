@@ -2,12 +2,12 @@
 // Spec available at https://sng.sourceforge.net/sng.html
 {
   meta: {
-    bdf: "0.1",
+    bdf: "0.5",
     name: "Scriptable Network Graphics (SNG)",
     mime: ["text/plain"], // no mime known for this format
     exts: [".sng"]
   },
   binary: [
-    { type: magic, match: "#SNG" }
+    { type: byte[4], match: "#SNG" }
   ]
 }

@@ -2,7 +2,7 @@
 // Produced from https://en.wikipedia.org/wiki/Flash_Video
 {
   meta: {
-    bdf: "0.4",
+    bdf: "0.5",
     name: "Flash Video (FLV) multimedia",
     mime: ["video/x-flv"],
     exts: [".flv"],
@@ -24,7 +24,7 @@
     },
     { id: Header, type: struct, endian: "big",
       fields: [
-        { type: magic,     match: "FLV" },
+        { type: byte[3],   magic: _ == "FLV" },
         { type: uint8,     id: version, name: "Version", valid: version == 0x01 },
         { type: TypeFlags, id: flags,   name: "Flags" },
         { type: uint32,    id: size,    name: "Header size (bytes)" }

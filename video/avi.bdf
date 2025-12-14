@@ -1,13 +1,13 @@
 {
   meta: {
-    bdf: "0.1",
+    bdf: "0.5",
     name: "Audio Video Interleave (AVI) file",
     mime: ["video/x-msvideo"],
     exts: [".avi"],
   },
   binary: [
-    { type: magic, match: "RIFF" },
+    { type: byte[4], magic: _ == "RIFF" },
     { type: uint32, endian: "little" },
-    { type: magic, match: "AVI\x00" } 
+    { type: byte[4], magic: _ == "AVI\x00" } 
   ]
 }

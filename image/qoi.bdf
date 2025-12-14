@@ -2,7 +2,7 @@
 // Spec at https://qoiformat.org/qoi-specification.pdf 
 {
   meta: {
-    bdf: "0.4",
+    bdf: "0.5",
     name: "Quite Ok Image (QOI) data",
     mime: ["image/x-qoi"],
     exts: [".qoi"],
@@ -29,7 +29,7 @@
       name: "Header",
       endian: "big",  
       fields: [
-        { type: magic, match: "qoif" },
+        { type: byte[4], magic: _ == "qoif" },
         { id: width, type: uint32, name: "Width (px)" },
         { id: height, type: uint32, name: "Height (px)" },
         { id: channels, type: ChannelConfig, name: "Channels" },

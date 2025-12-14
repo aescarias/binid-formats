@@ -1,11 +1,11 @@
 {
   meta: {
-    bdf: "0.1",
+    bdf: "0.5",
     name: "TrueType font",
     mime: ["font/ttf"],
     exts: [".ttf"]
   },
   binary: [
-    { type: magic, match: "\x00\x01\x00\x00\x00" }
+    { type: byte[5], magic: _ == "\x00\x01\x00\x00\x00" }
   ]
 }

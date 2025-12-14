@@ -6,6 +6,6 @@
     exts: [".rtf"]
   },
   binary: [
-    { type: magic, match: "{\\rtf1" }
+    { type: byte[6], magic: _ == "{\\rtf1" }
   ]
 }

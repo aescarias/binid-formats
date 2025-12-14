@@ -1,11 +1,12 @@
 {
   meta: {
-    bdf: "0.1",
+    bdf: "0.5",
     name: "Sphinx Objects Inventory version 2",
     mime: ["application/x-intersphinx"],
     exts: [".inv"],
   },
   binary: [
-    { type: magic, match: "# Sphinx inventory version 2" } 
+    { type: byte[28], magic: _ == "# Sphinx inventory version 2" } 
+    // the rest of the data is zlib compressed, we can't parse that yet.
   ]
 }

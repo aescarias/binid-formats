@@ -3,7 +3,7 @@
 
 {
   meta: {
-    bdf: "0.4",
+    bdf: "0.5",
     name: "Sun Raster bitmap",
     mime: ["image/x-sun-raster"], // mime not officially registered
     exts: [".ras", ".sun"]
@@ -38,7 +38,7 @@
       name: "Header",
       endian: "big",
       fields: [
-        { type: magic, match: "Y\xa6j\x95" },
+        { type: byte[4], magic: _ == "Y\xa6j\x95" },
         { type: uint32,       id: width,      name: "Width (px)" },
         { type: uint32,       id: height,     name: "Height (px)" },
         { type: uint32,       id: depth,      name: "Bits per pixel" },

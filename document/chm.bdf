@@ -1,11 +1,11 @@
 {
   meta: {
-    bdf: "0.1",
+    bdf: "0.5",
     name: "Microsoft Compiled HTML Help file",
     mime: ["application/vnd.ms-htmlhelp"],
     exts: [".chm"]
   },
   binary: [
-    { type: magic, match: "ITSF" },
+    { type: byte[4], magic: _ == "ITSF" },
   ]
 }

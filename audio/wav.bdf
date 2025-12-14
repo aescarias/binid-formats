@@ -139,9 +139,9 @@
     }
   ],
   binary: [
-    { type: magic,  match: "RIFF" },
+    { type: byte[4], magic: _ == "RIFF" },
     { type: uint32, id: fileSize, name: "File size (bytes)", endian: "little" },
-    { type: magic,  match: "WAVE" },
+    { type: byte[4], magic: _ == "WAVE" },
     { type: array[eos], 
       id: chunks,
       name: "Chunks",

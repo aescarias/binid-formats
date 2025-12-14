@@ -6,13 +6,13 @@
 
 {
   meta: {
-    bdf: "0.1",
+    bdf: "0.5",
     name: "rustc crate metadata archive",
     mime: [],
     exts: [".rmeta"]
   },
   binary: [
-    { type: magic, match: "rust\x00\x00\x00" },
+    { type: byte[7], magic: _ == "rust\x00\x00\x00" },
     { id: version, type: uint8 },
     { id: rootPos, type: uint64, endian: "little" },
 

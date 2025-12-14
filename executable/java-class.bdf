@@ -3,7 +3,7 @@
 
 {
   meta: {
-    bdf: "0.4",
+    bdf: "0.5",
     name: "Java class bytecode",
     exts: [".class"],
     mime: ["application/java-vm"],
@@ -182,7 +182,7 @@
       type: struct,
       endian: "big",
       fields: [
-        { type: magic,  match: "\xCA\xFE\xBA\xBE" },
+        { type: byte[4],  magic: _ == "\xCA\xFE\xBA\xBE" },
         { type: uint16, id: minorVersion,    name: "Minor version" },
         { type: uint16, id: majorVersion,    name: "Major version" },
         { type: uint16, id: constPoolCount,  name: "Constant pool count" },

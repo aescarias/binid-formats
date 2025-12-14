@@ -1,12 +1,12 @@
 {
   meta: {
-    bdf: "0.3",
+    bdf: "0.5",
     name: "Portable Network Graphics (PNG) image",
     mime: ["image/png"],
     exts: [".png"],
   },
   binary: [
-    { type: magic, match: "\x89PNG\r\n\x1a\n" },
+    { type: byte[8], magic: _ == "\x89PNG\r\n\x1a\n" },
     { type: array[eos], 
       id: chunks,
       name: "Chunks",

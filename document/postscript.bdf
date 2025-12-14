@@ -1,11 +1,11 @@
 {
   meta: {
-    bdf: "0.1",
+    bdf: "0.5",
     name: "PostScript file version 3.0",
     mime: ["application/postscript"],
     exts: [".ps"],
   },
   binary: [
-    { type: magic, match: "%!PS-Adobe-3.0" } 
+    { type: byte[14], magic: _ == "%!PS-Adobe-3.0" } 
   ]
 }

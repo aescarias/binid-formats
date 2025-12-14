@@ -1,6 +1,6 @@
 {
   meta: {
-    bdf: "0.4",
+    bdf: "0.5",
     name: "Windows Bitmap file",
     mime: ["image/bmp", "image/x-bmp"],
     exts: [".bmp", ".dib"],
@@ -29,7 +29,7 @@
       name: "Bitmap header",
       endian: "little",
       fields: [
-        { type: magic, match: "BM" },
+        { type: byte[2], magic: _ == "BM" },
         { id: size,         type: uint32, name: "File size (bytes)" },
         { id: _appDefined1, type: uint16 },
         { id: _appDefined2, type: uint16 },

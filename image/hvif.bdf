@@ -6,7 +6,7 @@
 
 {
   meta: {
-    bdf: "0.4",
+    bdf: "0.5",
     name: "Haiku Vector Icon",
     mime: [], // none defined
     exts: [".hvif"],
@@ -154,7 +154,7 @@
     }
   ],
   binary: [
-    { type: magic, match: ["ncif"] }, // in little endian: ficn = flat icon
+    { type: byte[4], magic: _ == "ncif" }, // in little endian: ficn = flat icon
     { type: uint8, id: styleCount, name: "Style count" },
     { type: array[styleCount],
       id: styles,
