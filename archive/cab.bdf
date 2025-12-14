@@ -1,11 +1,83 @@
 {
   meta: {
-    bdf: "0.1",
+    bdf: "0.5",
     name: "Microsoft cabinet file",
     mime: ["application/vnd.ms-cab-compressed"],
     exts: [".cab"]
   },
+  types: [
+    { id: CompressionType, type: enum[uint16], endian: "little",
+      members: [
+        { id: COMP_TYPE_MASK,    value: 0xF, name: "Mask for compression" },
+        { id: COMP_TYPE_NONE,    value: 0x0, name: "None" },
+        { id: COMP_TYPE_MSZIP,   value: 0x1, name: "MSZIP" },
+        { id: COMP_TYPE_QUANTUM, value: 0x2, name: "Quantum" },
+        { id: COMP_TYPE_LZX,     value: 0x3, name: "LZX" }
+      ]
+    },
+    { id: ReservedFields, type: struct, endian: "little",
+      fields: [
+        { type: uint16, id: headerDataSize, name: "Size of data in header (bytes)" },
+        { type: uint8,  id: folderDataSize, name: "Size of data in folder entries (bytes)" },
+        { type: uint8,  id: entryDataSize,  name: "Size of data in data entries (bytes)" },
+        { if: headerDataSize > 0,
+          type: byte[headerDataSize], id: headerData, name: "Header data" }
+      ]
+    },
+    { id: Header, type: struct, endian: "little",
+      fields: [
+        { type: byte[4], magic: _ == "MSCF" },
+        { type: uint32, id: _reserved1,   valid: _reserved1 == 0 },
+        { type: uint32, id: cabinetSize,  name: "Cabinet size (bytes)" },
+        { type: uint32, id: _reserved2,   valid: _reserved2 == 0 },
+        { type: uint32, id: firstFileAt,  name: "First file offset" },
+        { type: uint32, id: _reserved3,   valid: _reserved3 == 0 },
+        { type: uint8,  id: minorVersion, name: "Minor version" },
+        { type: uint8,  id: majorVersion, name: "Major version" },
+        { type: uint16, id: folders,      name: "Folders" },
+        { type: uint16, id: files,        name: "Files" },
+        { type: uint16, id: flags,        name: "Flags",
+          /* this could be any amount of values but we check these two as they are
+             the only ones we support currently. */
+          valid: flags == 0x0 || flags == 0x4 },
+        { type: uint16, id: setID,        name: "Set ID" },
+        { type: uint16, id: cabNumber,    name: "Index in set sequence" },
+
+        // PREV_CABINET    = 0x1
+        // NEXT_CABINET    = 0x2
+        // RESERVE_PRESENT = 0x4
+        { if: flags & 0x4 == 0x4, // RESERVE_PRESENT
+          type: ReservedFields, id: reservedFields, name: "Reserved data" },
+        
+      ]
+    },
+    { id: Folder, type: struct, endian: "little",
+      fields: [
+        { type: uint32,          id: dataStart,   name: "First data block offset" },
+        { type: uint16,          id: dataBlocks,  name: "Number of data blocks" },
+        { type: CompressionType, id: compression, name: "Compression type" },
+        { if: header.flags & 0x4 == 0x4 && header.reservedFields.folderDataSize > 0, 
+          type: byte[header.reservedFields.folderDataSize], 
+          id: headerData, name: "Header data"
+        }
+      ]
+    },
+    { id: File, type: struct, endian: "little",
+      fields: [
+        { type: uint32, id: uncompFileSize,  name: "Uncompressed file size (bytes)" },
+        { type: uint32, id: uncompFileStart, name: "Uncompressed file offset" },
+        { type: uint16, id: folderIndex,     name: "Folder index" },
+        { type: uint16, id: date,            name: "File date" },
+        { type: uint16, id: time,            name: "File time" },
+        { type: uint16, id: attributes,      name: "Attributes" }
+      ]
+    }
+  ],
   binary: [
-    { type: magic, match: "MSCF" }
+    { type: Header, id: header, name: "Header" },
+    { type: array[header.folders], 
+      name: "Folders",
+      item: { type: Folder, name: "Folder" }
+    }
   ]
 }
