@@ -1,0 +1,24 @@
+{
+  meta: {
+    bdf: "0.5",
+    name: "7z archive",
+    exts: [".7z"],
+    mime: ["application/x-7z-compressed"]
+  },
+  types: [
+    { id: Header, type: struct, endian: "little",
+      fields: [
+        { type: byte[6], magic: _ == ["7z\xbc\xaf\x27\x1c"] },
+        { type: uint8,  id: majorVersion,     name: "Major version" },
+        { type: uint8,  id: minorVersion,     name: "Minor version" },
+        { type: uint32, id: startHeaderCRC,   name: "Start header CRC" },
+        { type: uint64, id: nextHeaderOffset, name: "Next header offset" },
+        { type: uint64, id: nextHeaderSize,   name: "Next header size (bytes)" },
+        { type: uint32, id: nextHeaderCRC,    name: "Next header CRC" } 
+      ]
+    }
+  ],
+  binary: [
+    { type: Header, id: header, name: "Header" }
+  ]
+}

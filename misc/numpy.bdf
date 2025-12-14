@@ -1,0 +1,16 @@
+{ 
+  meta: {
+    bdf: "0.5",
+    name: "NumPy array data",
+    exts: [".npy"],
+    mime: ["application/x-npy"],
+    doc: "Storage format used by Numpy to store arrays on disk."
+  },
+  binary: [
+    { type: byte[6], magic: _ == "\x93NUMPY" },
+    { type: uint8,   id: majorVersion, name: "Major version" },
+    { type: uint8,   id: minorVersion, name: "Minor version" },
+    { type: uint16,  id: headerLength, name: "Length of header", endian: "little" },
+    { type: byte[headerLength], id: header, name: "Header", strip: true }
+  ]
+}
