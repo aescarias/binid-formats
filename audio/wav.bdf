@@ -50,7 +50,7 @@
     { id: MIDISampleChunk, type: struct, endian: "little",
       fields: [
         { type: uint32,  id: length,            name: "Size (bytes)" },
-        { type: var,     id: _start,            value: file.pos },
+        { type: var,     id: _start,            value: filepos },
         { type: byte[4], id: manufacturer,      name: "Manufacturer code" },
         { type: byte[4], id: product,           name: "Product ID" },
         { type: uint32,  id: samplePeriod,      name: "Sampling period (ns)" },
@@ -66,12 +66,12 @@
         },
         { if: samplerDataLength > 0,
           type: byte[samplerDataLength], id: samplerData, name: "Sampler data" },
-        { type: byte[_start + length - file.pos] }
+        { type: byte[_start + length - filepos] }
       ]
     },
     { id: FormatChunk, type: struct, endian: "little",
       fields: [
-        { type: var,       id: _start,        value: file.pos },
+        { type: var,       id: _start,        value: filepos },
         { type: uint32,    id: length,        name: "Size (bytes)" },
         { type: FormatTag, id: formatTag,     name: "Format type" },
         { type: uint16,    id: numChannels,   name: "Number of channels" },
@@ -96,7 +96,7 @@
             { type: byte[16], id: guid,               name: "Subformat GUID" }
           ] 
         },
-        { type: var, id: _padding, value: file.pos - _start - length },
+        { type: var, id: _padding, value: filepos - _start - length },
         { type: byte[_padding], if: _padding > 0 }
       ]
     },
@@ -110,13 +110,13 @@
       fields: [        
         { type: uint32,  id: length, name: "Length (bytes)" },
 
-        { type: var,     id: _start,  value: file.pos },
+        { type: var,     id: _start,  value: filepos },
         { type: var,     id: _end,    value: _start + length },
 
         { type: byte[4], id: type,   name: "Type" },
         { switch: type,
           cases: {
-            "INFO": { while: file.pos < _end,
+            "INFO": { while: filepos < _end,
                       type: array[eos], id: chunk, name: "Info elements", 
                       item: { type: InfoListChunk, name: "Info chunk" } }
           },
