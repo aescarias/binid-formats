@@ -369,7 +369,8 @@
         {id: PYMAGIC_315a1_V2,  value: 3652,  doc: "Python 3.15a1"},
         {id: PYMAGIC_315a1_V3,  value: 3653,  doc: "Python 3.15a1"},
         {id: PYMAGIC_315a1_V4,  value: 3654,  doc: "Python 3.15a1"},
-        {id: PYMAGIC_315a1_V5,  value: 3655,  doc: "Python 3.15a1"}
+        {id: PYMAGIC_315a1_V5,  value: 3655,  doc: "Python 3.15a1"},
+        {id: PYMAGIC_315a1_V6,  value: 3656,  doc: "Python 3.15a1"},
       ]
     }
   ],

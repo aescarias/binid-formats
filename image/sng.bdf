@@ -8,6 +8,6 @@
     exts: [".sng"]
   },
   binary: [
-    { type: byte[4], match: "#SNG" }
+    { type: byte[4], magic: _ == "#SNG" }
   ]
 }

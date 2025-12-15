@@ -1,0 +1,28 @@
+// BinDef for Chromium's Binary Dictionary (bdic) format
+
+{
+  meta: {
+    bdf: "0.5",
+    name: "Chromium Binary Dictionary (BDict)",
+    mime: [],
+    exts: [".bdic"],
+    doc: "Data format for storing dictionary definitions. A compact form of the Hunspell .aff and .dic files."
+  },
+  binary: [
+    { id: header,
+      type: struct,
+      name: "Header",
+      endian: "little",
+      fields: [
+        { type: byte[4], magic: _ == "BDic" },
+        { type: uint16, id: majorVersion, name: "Major version" },
+        { type: uint16, id: minorVersion, name: "Minor version" },
+        { type: uint32, id: affOffset,    name: "Offset to aff data" },
+        { type: uint32, id: dicOffset,    name: "Offset to dic data" },
+        { if: majorVersion >= 2,
+          type: byte[8], id: checksum,    name: "MD5 checksum"
+        }
+      ]
+    }
+  ]
+}

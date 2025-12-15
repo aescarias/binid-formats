@@ -13,7 +13,7 @@
       fields: [
         // the magic includes two reserved bytes plus two bytes for the file type
         // the .ico format structure is also shared with cursor files
-        { type: match, magic: _ == "\x00\x00\x01\x00" },
+        { type: byte[4], magic: _ == "\x00\x00\x01\x00" },
         { type: uint16, id: imageCount, name: "Images" },        
       ]
     },
